@@ -19,7 +19,7 @@ We demonstrate here how the code can be used in conjunction with the
 [Multi-Agent Particle Environments (MPE)](https://github.com/openai/multiagent-particle-envs).
 
 - Download and install the MPE code [here](https://github.com/openai/multiagent-particle-envs)
-by following the `README`.`
+by following the `README`.
 
 - Ensure that `multiagent-particle-envs` has been added to your `PYTHONPATH` (e.g. in `~/.bashrc` or `~/.bash_profile`).
 
@@ -83,10 +83,23 @@ has been provided), but does not continue training (default: `False`)
 
 - `--plots-dir`: directory where training curves are saved (default: `"./learning_curves/"`)
 
+## Code structure
+
+- `./experiments/train.py`: contains code for training MADDPG on the MPE
+
+- `./maddpg/trainer/maddpg.py`: core code for the MADDPG algorithm
+
+- `./maddpg/trainer/replay_buffer.py`: replay buffer code for MADDPG
+
+- `./maddpg/common/distributions.py`: useful distributions used in `maddpg.py`
+
+- `./maddpg/common/tf_util.py`: useful tensorflow functions used in `maddpg.py`
+
+
 
 ## Paper citation
 
-If you used this environment for your experiments or found it helpful, consider citing the following paper:
+If you used this code for your experiments or found it helpful, consider citing the following paper:
 
 <pre>
 @article{lowe2017multi,
