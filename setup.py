@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
-setup(name='multiagent_rl',
+setup(name='maddpg',
       version='0.0.1',
-      description='Multi-Agent Reinforcement Learning Algorithms',
-      url='https://github.com/openai/multiagent_rl',
+      description='Multi-Agent Deep Deterministic Policy Gradient',
+      url='https://github.com/openai/maddpg',
       author='Igor Mordatch',
       author_email='mordatch@openai.com',
       packages=find_packages(),
