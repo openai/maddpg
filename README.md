@@ -25,9 +25,9 @@ by following the `README`.
 
 - To run the code, `cd` into the `experiments` directory and run `train.py`:
 
-``python train.py --scenario simple.py``
+``python train.py --scenario simple``
 
-- You can replace `simple.py` with any environment in the MPE you'd like to run.
+- You can replace `simple` with any environment in the MPE you'd like to run.
 
 ## Command-line options
 
