@@ -5,13 +5,13 @@ This is the code for implementing the MADDPG algorithm presented in the paper:
 It is configured to be run in conjunction with environments from the
 [Multi-Agent Particle Environments (MPE)](https://github.com/openai/multiagent-particle-envs).
 Note: this codebase has been restructured since the original paper, and the results may
-vary slightly from those reported in the paper.
+vary from those reported in the paper.
 
 ## Installation
 
 - To install, `cd` into the root directory and type `pip install -e .`
 
-- Known dependencies: OpenAI gym, tensorflow, numpy
+- Known dependencies: Python (3.5.4), OpenAI gym (0.10.5), tensorflow (1.8.0), numpy (1.14.5)
 
 ## Case study: Multi-Agent Particle Environments
 

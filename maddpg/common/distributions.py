@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 import maddpg.common.tf_util as U
 from tensorflow.python.ops import math_ops
+from multiagent.multi_discrete import MultiDiscrete
 from tensorflow.python.ops import nn
 
 class Pd(object):
@@ -314,7 +315,7 @@ def make_pdtype(ac_space):
     elif isinstance(ac_space, spaces.Discrete):
         # return CategoricalPdType(ac_space.n)
         return SoftCategoricalPdType(ac_space.n)
-    elif isinstance(ac_space, spaces.MultiDiscrete):
+    elif isinstance(ac_space, MultiDiscrete):
         #return MultiCategoricalPdType(ac_space.low, ac_space.high)
         return SoftMultiCategoricalPdType(ac_space.low, ac_space.high)
     elif isinstance(ac_space, spaces.MultiBinary):
