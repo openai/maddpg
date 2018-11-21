@@ -1,3 +1,5 @@
+**Status:** Archive (code is provided as-is, no updates expected)
+
 # Multi-Agent Deep Deterministic Policy Gradient (MADDPG)
 
 This is the code for implementing the MADDPG algorithm presented in the paper:
