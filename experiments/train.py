@@ -14,9 +14,9 @@ def parse_args():
     parser.add_argument("--scenario", type=str, default="simple", help="name of the scenario script")
     parser.add_argument("--max-episode-len", type=int, default=25, help="maximum episode length")
     parser.add_argument("--num-episodes", type=int, default=60000, help="number of episodes")
-    parser.add_argument("--num-adversaries", type=int, default=0, help="number of adversaries")
-    parser.add_argument("--good-policy", type=str, default="maddpg", help="policy for good agents")
-    parser.add_argument("--adv-policy", type=str, default="maddpg", help="policy of adversaries")
+    parser.add_argument("--num-adversaries", type=int, default=0, help="number of adversaries (defensive players)")
+    parser.add_argument("--good-policy", type=str, default="maddpg", help="policy for good agents (offensive players)")
+    parser.add_argument("--adv-policy", type=str, default="maddpg", help="policy of adversaries (defensive players)")
     # Core training parameters
     parser.add_argument("--lr", type=float, default=1e-2, help="learning rate for Adam optimizer")
     parser.add_argument("--gamma", type=float, default=0.95, help="discount factor")
@@ -45,6 +45,40 @@ def mlp_model(input, num_outputs, scope, reuse=False, num_units=64, rnn_cell=Non
         out = layers.fully_connected(out, num_outputs=num_outputs, activation_fn=None)
         return out
 
+def done_callback(agent, world):
+    # TODO: PASS REWARDS BASED ON REASON FOR BEING DONE!!!!!!!
+
+    # Agent is done if out of bounds,
+    # Agent is done if quarterback has reached goal state
+    # Agent is done if defensive lineman has reached quarterback
+
+    # Agent is done if it is out of bounds
+    if (not agent.in_bounds):
+        return True
+
+    q_back = list(filter(lambda player: player.position == 'q_back', world.agents))[0]
+    d_line = list(filter(lambda player: player.position == 'd_line', world.agents))
+    line_of_scrimmage = world.line_of_scrimmage
+    q_pos = q_back.position
+
+    # Quarterback is past line of scrimmage
+    if q_back.position[1] > line_of_scrimmage + 10 || not q_back.in_bounds:
+        return True
+
+    for d_player in d_line:
+        # Check if d_player is close to q_back (ie touching, look into how to find that out)
+        # If so return True
+        d_pos = d_player.position
+        dist_min = q_back.size + d_player.size
+
+        # If the quarterback and defensive player are touching, set agents to done
+        if (((d_pos[0] - q_pos[0])**2 + (d_pos[1] - q_pos[1])**2)**0.5 < dist_min:
+            return True
+
+    return False
+
+
+
 def make_env(scenario_name, arglist, benchmark=False):
     from multiagent.environment import MultiAgentEnv
     import multiagent.scenarios as scenarios
@@ -57,7 +91,7 @@ def make_env(scenario_name, arglist, benchmark=False):
     if benchmark:
         env = MultiAgentEnv(world, scenario.reset_world, scenario.reward, scenario.observation, scenario.benchmark_data)
     else:
-        env = MultiAgentEnv(world, scenario.reset_world, scenario.reward, scenario.observation)
+        env = MultiAgentEnv(world, scenario.reset_world, scenario.reward, scenario.observation, None, done_callback, None)
     return env
 
 def get_trainers(env, num_adversaries, obs_shape_n, arglist):
