@@ -24,7 +24,7 @@ def parse_args():
     parser.add_argument("--num-units", type=int, default=64, help="number of units in the mlp")
     # Checkpointing
     parser.add_argument("--exp-name", type=str, default=None, help="name of the experiment")
-    parser.add_argument("--save-dir", type=str, default="/tmp/policy/", help="directory in which training state and model should be saved")
+    parser.add_argument("--save-dir", type=str, default="./tmp/policy/", help="directory in which training state and model should be saved")
     parser.add_argument("--save-rate", type=int, default=1000, help="save model once every time this many episodes are completed")
     parser.add_argument("--load-dir", type=str, default="", help="directory in which training state and model are loaded")
     # Evaluation
@@ -36,6 +36,7 @@ def parse_args():
     parser.add_argument("--plots-dir", type=str, default="./learning_curves/", help="directory where plot data is saved")
     return parser.parse_args()
 
+# MLP model used. Takes observation as input, outputs values of actions
 def mlp_model(input, num_outputs, scope, reuse=False, num_units=64, rnn_cell=None):
     # This model takes as input an observation and returns values of all actions
     with tf.variable_scope(scope, reuse=reuse):
@@ -45,40 +46,8 @@ def mlp_model(input, num_outputs, scope, reuse=False, num_units=64, rnn_cell=Non
         out = layers.fully_connected(out, num_outputs=num_outputs, activation_fn=None)
         return out
 
-def done_callback(agent, world):
-    # TODO: PASS REWARDS BASED ON REASON FOR BEING DONE!!!!!!!
 
-    # Agent is done if out of bounds,
-    # Agent is done if quarterback has reached goal state
-    # Agent is done if defensive lineman has reached quarterback
-
-    # Agent is done if it is out of bounds
-    if (not agent.in_bounds):
-        return True
-
-    q_back = list(filter(lambda player: player.position == 'q_back', world.agents))[0]
-    d_line = list(filter(lambda player: player.position == 'd_line', world.agents))
-    line_of_scrimmage = world.line_of_scrimmage
-    q_pos = q_back.position
-
-    # Quarterback is past line of scrimmage
-    if q_back.position[1] > line_of_scrimmage + 10 || not q_back.in_bounds:
-        return True
-
-    for d_player in d_line:
-        # Check if d_player is close to q_back (ie touching, look into how to find that out)
-        # If so return True
-        d_pos = d_player.position
-        dist_min = q_back.size + d_player.size
-
-        # If the quarterback and defensive player are touching, set agents to done
-        if (((d_pos[0] - q_pos[0])**2 + (d_pos[1] - q_pos[1])**2)**0.5 < dist_min:
-            return True
-
-    return False
-
-
-
+# Makes environment using scenario.
 def make_env(scenario_name, arglist, benchmark=False):
     from multiagent.environment import MultiAgentEnv
     import multiagent.scenarios as scenarios
@@ -91,9 +60,11 @@ def make_env(scenario_name, arglist, benchmark=False):
     if benchmark:
         env = MultiAgentEnv(world, scenario.reset_world, scenario.reward, scenario.observation, scenario.benchmark_data)
     else:
-        env = MultiAgentEnv(world, scenario.reset_world, scenario.reward, scenario.observation, None, done_callback, None)
+        env = MultiAgentEnv(world, scenario.reset_world, scenario.reward, scenario.observation, None, None, None)
     return env
 
+
+# Gets trainers for each agent and adversary. NEED TO INDICATE the agents and the adversaries (agents offense, adversaries defense)
 def get_trainers(env, num_adversaries, obs_shape_n, arglist):
     trainers = []
     model = mlp_model
@@ -142,7 +113,7 @@ def train(arglist):
 
         print('Starting iterations...')
         while True:
-            # get action
+            # get actions
             action_n = [agent.action(obs) for agent, obs in zip(trainers,obs_n)]
             # environment step
             new_obs_n, rew_n, done_n, info_n = env.step(action_n)
