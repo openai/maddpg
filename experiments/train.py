@@ -105,7 +105,7 @@ def train(arglist):
         final_ep_rewards = []  # sum of rewards for training curve
         final_ep_ag_rewards = []  # agent rewards for training curve
         agent_info = [[[]]]  # placeholder for benchmarking info
-        saver = tf.train.Saver()
+        # saver = tf.train.Saver()
         obs_n = env.reset()
         episode_step = 0
         train_step = 0
@@ -113,6 +113,7 @@ def train(arglist):
 
         print('Starting iterations...')
         while True:
+            # print("it")
             # get actions
             action_n = [agent.action(obs) for agent, obs in zip(trainers,obs_n)]
             # environment step
@@ -130,12 +131,14 @@ def train(arglist):
                 agent_rewards[i][-1] += rew
 
             if done or terminal:
+                # print("episode finished", agent_rewards)
                 obs_n = env.reset()
                 episode_step = 0
                 episode_rewards.append(0)
                 for a in agent_rewards:
                     a.append(0)
                 agent_info.append([[]])
+                # print("New episode")
 
             # increment global step counter
             train_step += 1
@@ -166,8 +169,11 @@ def train(arglist):
                 loss = agent.update(trainers, train_step)
 
             # save model, display training output
+            # if terminal and (len(episode_rewards) % arglist.save_rate == 0):
+            #     U.save_state(arglist.save_dir, saver=saver)
             if terminal and (len(episode_rewards) % arglist.save_rate == 0):
-                U.save_state(arglist.save_dir, saver=saver)
+                U.save_state(arglist.save_dir)
+
                 # print statement depends on whether or not there are adversaries
                 if num_adversaries == 0:
                     print("steps: {}, episodes: {}, mean episode reward: {}, time: {}".format(
@@ -181,6 +187,7 @@ def train(arglist):
                 final_ep_rewards.append(np.mean(episode_rewards[-arglist.save_rate:]))
                 for rew in agent_rewards:
                     final_ep_ag_rewards.append(np.mean(rew[-arglist.save_rate:]))
+                print(final_ep_rewards)
 
             # saves final episode reward for plotting training curve later
             if len(episode_rewards) > arglist.num_episodes:
