@@ -105,11 +105,12 @@ def train(arglist):
         final_ep_rewards = []  # sum of rewards for training curve
         final_ep_ag_rewards = []  # agent rewards for training curve
         agent_info = [[[]]]  # placeholder for benchmarking info
-        # saver = tf.train.Saver()
+        saver = tf.train.Saver()
         obs_n = env.reset()
         episode_step = 0
         train_step = 0
         t_start = time.time()
+        num_ep = 0
 
         print('Starting iterations...')
         while True:
@@ -131,6 +132,10 @@ def train(arglist):
                 agent_rewards[i][-1] += rew
 
             if done or terminal:
+                num_ep += 1
+                if (num_ep % 50 == 0):
+                    print("Episode finished: ", num_ep)
+                    print(rew_n)
                 # print("episode finished", agent_rewards)
                 obs_n = env.reset()
                 episode_step = 0
@@ -169,10 +174,10 @@ def train(arglist):
                 loss = agent.update(trainers, train_step)
 
             # save model, display training output
-            # if terminal and (len(episode_rewards) % arglist.save_rate == 0):
-            #     U.save_state(arglist.save_dir, saver=saver)
             if terminal and (len(episode_rewards) % arglist.save_rate == 0):
-                U.save_state(arglist.save_dir)
+                U.save_state(arglist.save_dir, saver=saver)
+            # if terminal and (len(episode_rewards) % arglist.save_rate == 0):
+            #     U.save_state(arglist.save_dir)
 
                 # print statement depends on whether or not there are adversaries
                 if num_adversaries == 0:
