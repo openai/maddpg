@@ -233,6 +233,7 @@ def load_state(fname, saver=None):
 
 def save_state(fname, saver=None):
     """Save all the variables in the current session to the location <fname>"""
+    print(fname)
     os.makedirs(os.path.dirname(fname), exist_ok=True)
     if saver is None:
         saver = tf.train.Saver()
