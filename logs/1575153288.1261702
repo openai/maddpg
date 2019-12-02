@@ -1,0 +1,27 @@
+INFO:root:Using good policy maddpg and adv policy maddpg
+INFO:root:Starting iterations...
+INFO:root:Episode 0 Counter({5: 13})
+INFO:root:[-575.0, -575.0, -23279.0, -13845.0, -575.0, -575.0, -575.0, 575.0, 575.0, -13450.0, -5715.0, 575.0, 575.0]
+INFO:root:steps: 495, episodes: 2, mean episode reward: -28432.0, agent episode reward: [-287.5, -287.5, -11639.5, -6922.5, -287.5, -287.5, -287.5, 287.5, 287.5, -6725.0, -2857.5, 287.5, 287.5], time: 6.481
+INFO:root:Episode 1 Counter({5: 13})
+INFO:root:[-663, -663, -28084, -9127, -3965, -663, -663, -26830, -27740, 663, -26011, 663, 663]
+INFO:root:Episode 2 Counter({5: 13})
+INFO:root:[-496, -950, -496, -496, -496, -496, -496, -26997, -4338, -2609, -19990, -4247, 496]
+INFO:root:steps: 1654, episodes: 4, mean episode reward: -30805.5, agent episode reward: [-248.0, -475.0, -248.0, -248.0, -248.0, -248.0, -248.0, -13498.5, -2169.0, -1304.5, -9995.0, -2123.5, 248.0], time: 9.178
+INFO:root:Episode 3 Counter({1: 10, 2: 3})
+INFO:root:[-500, -500, -6076, -2961, -500, -500, -500, 500, 500, 500, -621, 500, 500]
+INFO:root:Episode 4 Counter({3: 13})
+INFO:root:[17, 17, 17, 17, 17, 17, 17, -17, -17, -17, -17, -17, -17]
+INFO:root:steps: 2137, episodes: 6, mean episode reward: 8.5, agent episode reward: [8.5, 8.5, 8.5, 8.5, 8.5, 8.5, 8.5, -8.5, -8.5, -8.5, -8.5, -8.5, -8.5], time: 4.373
+INFO:root:Episode 5 Counter({3: 13})
+INFO:root:[-44, -44, -44, -44, -44, -44, -44, 44, 44, 44, 44, 44, 44]
+INFO:root:Episode 6 Counter({5: 13})
+INFO:root:[-342, -342, -11298, -342, -342, -342, -342, 342, -8678, 342, -11408, 342, 342]
+INFO:root:steps: 2723, episodes: 8, mean episode reward: -16034.0, agent episode reward: [-171.0, -171.0, -5649.0, -171.0, -171.0, -171.0, -171.0, 171.0, -4339.0, 171.0, -5704.0, 171.0, 171.0], time: 5.251
+INFO:root:Episode 7 Counter({5: 13})
+INFO:root:[-680, -3537, -25876, -4071, -680, -680, -680, -27814, -27723, 680, -27723, 680, 680]
+INFO:root:Episode 8 Counter({5: 13})
+INFO:root:[-607, -8715, -21353, -9605, -6846, -607, -607, -17877, -14965, 607, -9596, 607, 607]
+INFO:root:steps: 3850, episodes: 10, mean episode reward: -44478.5, agent episode reward: [-303.5, -4357.5, -10676.5, -4802.5, -3423.0, -303.5, -303.5, -8938.5, -7482.5, 303.5, -4798.0, 303.5, 303.5], time: 9.05
+INFO:root:Episode 9 Counter({5: 13})
+INFO:root:[-504, -504, -12617, -504, -504, -504, -504, -326, -11246, 504, -6696, 504, 504]

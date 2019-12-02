@@ -1,0 +1,4 @@
+INFO:root:Using good policy maddpg and adv policy maddpg
+INFO:root:Starting iterations...
+INFO:root:Episode 0 Counter({3: 13})
+INFO:root:[-40.0, -40.0, -40.0, -40.0, -40.0, -40.0, -40.0, 40.0, 40.0, 40.0, 40.0, 40.0, 40.0]

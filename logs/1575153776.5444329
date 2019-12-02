@@ -1,0 +1,47 @@
+INFO:root:Using good policy maddpg and adv policy maddpg
+INFO:root:Starting iterations...
+INFO:root:Episode 0 Counter({4: 12, 2: 1})
+INFO:root:[-176.0, -176.0, -176.0, -176.0, -176.0, -176.0, -176.0, 176.0, 176.0, 176.0, 176.0, 176.0, 165.0]
+INFO:root:steps: 256, episodes: 2, mean episode reward: -93.5, agent episode reward: [-88.0, -88.0, -88.0, -88.0, -88.0, -88.0, -88.0, 88.0, 88.0, 88.0, 88.0, 88.0, 82.5], time: 4.914
+INFO:root:Episode 1 Counter({4: 12, 2: 1})
+INFO:root:[-163, -163, -163, -163, -163, -163, -163, 163, 163, 163, 163, 163, 152]
+INFO:root:Episode 2 Counter({4: 12, 2: 1})
+INFO:root:[-169, -169, -169, -169, -169, -169, -169, 169, 169, 169, 169, 169, 158]
+INFO:root:steps: 748, episodes: 4, mean episode reward: -90.0, agent episode reward: [-84.5, -84.5, -84.5, -84.5, -84.5, -84.5, -84.5, 84.5, 84.5, 84.5, 84.5, 84.5, 79.0], time: 4.489
+INFO:root:Episode 3 Counter({4: 11, 2: 2})
+INFO:root:[-206, -206, -206, -206, -206, -731, -206, 206, 206, 206, 206, 206, 195]
+INFO:root:Episode 4 Counter({4: 11, 2: 2})
+INFO:root:[-182, -182, -182, -182, -1508, -182, -182, 182, 182, 182, 182, 182, 171]
+INFO:root:steps: 1296, episodes: 6, mean episode reward: -759.5, agent episode reward: [-91.0, -91.0, -91.0, -91.0, -754.0, -91.0, -91.0, 91.0, 91.0, 91.0, 91.0, 91.0, 85.5], time: 4.866
+INFO:root:Episode 5 Counter({4: 11, 2: 2})
+INFO:root:[-186, -186, -186, -3203, -186, -186, -186, 186, 186, 186, 186, 186, 175]
+INFO:root:Episode 6 Counter({4: 10, 2: 3})
+INFO:root:[-185, -185, -185, -5427, -185, -799, -185, 185, 185, 185, 185, 185, 174]
+INFO:root:steps: 1827, episodes: 8, mean episode reward: -3026.0, agent episode reward: [-92.5, -92.5, -92.5, -2713.5, -92.5, -399.5, -92.5, 92.5, 92.5, 92.5, 92.5, 92.5, 87.0], time: 4.782
+INFO:root:Episode 7 Counter({4: 10, 2: 3})
+INFO:root:[-172, -172, -172, -172, -172, -1053, -172, 172, 172, 172, 172, -294, 161]
+INFO:root:Episode 8 Counter({4: 10, 2: 3})
+INFO:root:[-193, -193, -193, -193, -2142, -193, -193, 193, 193, 193, 193, -1911, 182]
+INFO:root:steps: 2352, episodes: 10, mean episode reward: -2128.5, agent episode reward: [-96.5, -96.5, -96.5, -96.5, -1071.0, -96.5, -96.5, 96.5, 96.5, 96.5, 96.5, -955.5, 91.0], time: 4.709
+INFO:root:Episode 9 Counter({4: 12, 2: 1})
+INFO:root:[-175, -175, -175, -175, -175, -175, -175, 175, 175, 175, 175, 175, 164]
+INFO:root:Episode 10 Counter({4: 8, 2: 5})
+INFO:root:[-265, -265, -265, -6575, -6397, -8444, -265, 265, 265, 265, 265, -2112, 254]
+INFO:root:steps: 2952, episodes: 12, mean episode reward: -11637.0, agent episode reward: [-132.5, -132.5, -132.5, -3287.5, -3198.5, -4222.0, -132.5, 132.5, 132.5, 132.5, 132.5, -1056.0, 127.0], time: 5.247
+INFO:root:Episode 11 Counter({1: 11, 2: 2})
+INFO:root:[-436, -436, -436, -436, -436, -3876, -436, 436, 436, -230, 436, 436, 436]
+INFO:root:Episode 12 Counter({4: 11, 2: 2})
+INFO:root:[-184, -184, -184, -184, -184, -2133, -184, 184, 184, 184, 184, 184, 173]
+INFO:root:steps: 3532, episodes: 14, mean episode reward: -1072.0, agent episode reward: [-92.0, -92.0, -92.0, -92.0, -92.0, -1066.5, -92.0, 92.0, 92.0, 92.0, 92.0, 92.0, 86.5], time: 5.152
+INFO:root:Episode 13 Counter({4: 11, 2: 2})
+INFO:root:[-170, -170, -170, -2119, -170, -170, -170, 170, 170, 170, 170, 170, 159]
+INFO:root:Episode 14 Counter({1: 13})
+INFO:root:[-337, -337, -337, -337, -337, -337, -337, 337, 337, 337, 337, 337, 337]
+INFO:root:steps: 3999, episodes: 16, mean episode reward: -168.5, agent episode reward: [-168.5, -168.5, -168.5, -168.5, -168.5, -168.5, -168.5, 168.5, 168.5, 168.5, 168.5, 168.5, 168.5], time: 4.356
+INFO:root:Episode 15 Counter({4: 11, 2: 2})
+INFO:root:[-208, -208, -208, -208, -208, -1979, -208, 208, 208, 208, 208, 208, 197]
+INFO:root:Episode 16 Counter({4: 11, 2: 2})
+INFO:root:[-203, -203, -203, -203, -1974, -203, -203, 203, 203, 203, 203, 203, 192]
+INFO:root:steps: 4570, episodes: 18, mean episode reward: -992.5, agent episode reward: [-101.5, -101.5, -101.5, -101.5, -987.0, -101.5, -101.5, 101.5, 101.5, 101.5, 101.5, 101.5, 96.0], time: 5.199
+INFO:root:Episode 17 Counter({4: 12, 2: 1})
+INFO:root:[-194, -194, -194, -194, -194, -194, -194, 194, 194, 194, 194, 194, 183]

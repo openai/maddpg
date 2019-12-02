@@ -1,0 +1,26 @@
+INFO:root:Using good policy maddpg and adv policy maddpg
+INFO:root:Starting iterations...
+INFO:root:Episode 0 Counter({5: 13})
+INFO:root:[-550.0, -12841.0, -550.0, -550.0, -550.0, -550.0, -16312.0, 550.0, -644.0, 550.0, 550.0, 550.0, 550.0]
+INFO:root:Episode 1 Counter({5: 13})
+INFO:root:[-392, -392, -392, -392, -392, -392, -18023, 392, 392, 392, -17000, 392, 392]
+INFO:root:Episode 2 Counter({5: 13})
+INFO:root:[-392, -392, -392, -4050, -7076, -392, -392, 392, -7081, 392, 392, 392, 392]
+INFO:root:Episode 3 Counter({4: 7, 2: 6})
+INFO:root:[-492, -17215, -1284, -15168, -492, -492, -23979, 492, 492, -611, 492, 492, 481]
+INFO:root:Episode 4 Counter({5: 13})
+INFO:root:[-482, -482, -482, -3161, -482, -482, -482, 482, 482, 482, -7264, 482, 482]
+INFO:root:Episode 5 Counter({5: 13})
+INFO:root:[-631, -9451, -631, -7849, -631, -631, -23068, 631, -4203, 631, 631, 631, 631]
+INFO:root:Episode 6 Counter({4: 10, 2: 3})
+INFO:root:[-477, -477, -477, -21027, -477, -477, -477, 477, 477, 477, -27107, 477, 466]
+INFO:root:Episode 7 Counter({5: 13})
+INFO:root:[-560, -5375, -560, -560, -560, -560, -12228, 560, 560, 560, 560, -11008, 560]
+INFO:root:Episode 8 Counter({5: 13})
+INFO:root:[-579, -11090, -579, -5483, -579, -579, -24084, 579, 579, 579, 579, 579, 579]
+INFO:root:Episode 9 Counter({3: 13})
+INFO:root:[-41, -41, -41, -41, -41, -41, -41, 41, 41, 41, 41, 41, 41]
+INFO:root:Episode 10 Counter({4: 11, 2: 2})
+INFO:root:[-221, -221, -221, -221, -221, -221, -221, 221, 221, 221, -5887, 221, 210]
+INFO:root:Episode 11 Counter({5: 13})
+INFO:root:[-1197, -17751, -654, -5024, -1286, -654, -28164, 654, 654, -1814, -23381, 654, 654]

@@ -1,0 +1,24 @@
+INFO:root:Using good policy maddpg and adv policy maddpg
+INFO:root:Starting iterations...
+INFO:root:Episode 0 Counter({4: 12, 2: 1})
+INFO:root:[-169.0, -169.0, -169.0, -169.0, -169.0, -169.0, -169.0, 169.0, 169.0, 169.0, 169.0, 169.0, 158.0]
+INFO:root:steps: 249, episodes: 2, mean episode reward: -90.0, agent episode reward: [-84.5, -84.5, -84.5, -84.5, -84.5, -84.5, -84.5, 84.5, 84.5, 84.5, 84.5, 84.5, 79.0], time: 4.959
+INFO:root:Episode 1 Counter({4: 12, 2: 1})
+INFO:root:[-165, -165, -165, -165, -165, -165, -165, 165, 165, 165, 165, 165, 154]
+INFO:root:Episode 2 Counter({4: 12, 2: 1})
+INFO:root:[-160, -160, -160, -160, -160, -160, -160, 160, 160, 160, 160, 160, 149]
+INFO:root:steps: 734, episodes: 4, mean episode reward: -85.5, agent episode reward: [-80.0, -80.0, -80.0, -80.0, -80.0, -80.0, -80.0, 80.0, 80.0, 80.0, 80.0, 80.0, 74.5], time: 4.542
+INFO:root:Episode 3 Counter({4: 11, 2: 2})
+INFO:root:[-167, -167, -167, -167, -167, -167, -167, 167, 167, 167, 167, -390, 156]
+INFO:root:Episode 4 Counter({4: 12, 2: 1})
+INFO:root:[-177, -177, -177, -177, -177, -177, -177, 177, 177, 177, 177, 177, 166]
+INFO:root:steps: 1238, episodes: 6, mean episode reward: -94.0, agent episode reward: [-88.5, -88.5, -88.5, -88.5, -88.5, -88.5, -88.5, 88.5, 88.5, 88.5, 88.5, 88.5, 83.0], time: 4.748
+INFO:root:Episode 5 Counter({4: 12, 2: 1})
+INFO:root:[-180, -180, -180, -180, -180, -180, -180, 180, 180, 180, 180, 180, 169]
+INFO:root:Episode 6 Counter({4: 12, 2: 1})
+INFO:root:[-162, -162, -162, -162, -162, -162, -162, 162, 162, 162, 162, 162, 151]
+INFO:root:steps: 1740, episodes: 8, mean episode reward: -86.5, agent episode reward: [-81.0, -81.0, -81.0, -81.0, -81.0, -81.0, -81.0, 81.0, 81.0, 81.0, 81.0, 81.0, 75.5], time: 4.562
+INFO:root:Episode 7 Counter({4: 12, 2: 1})
+INFO:root:[-174, -174, -174, -174, -174, -174, -174, 174, 174, 174, 174, 174, 163]
+INFO:root:Episode 8 Counter({4: 12, 2: 1})
+INFO:root:[-179, -179, -179, -179, -179, -179, -179, 179, 179, 179, 179, 179, 168]

@@ -1,0 +1,45 @@
+INFO:root:Using good policy maddpg and adv policy maddpg
+INFO:root:Starting iterations...
+INFO:root:Episode 0 Counter({4: 10, 2: 3})
+INFO:root:[-5734.0, -225.0, -225.0, -225.0, -225.0, -225.0, -225.0, 225.0, 225.0, 225.0, -3790.0, 225.0, 214.0]
+INFO:root:steps: 305, episodes: 2, mean episode reward: -4880.0, agent episode reward: [-2867.0, -112.5, -112.5, -112.5, -112.5, -112.5, -112.5, 112.5, 112.5, 112.5, -1895.0, 112.5, 107.0], time: 5.163
+INFO:root:Episode 1 Counter({4: 11, 2: 2})
+INFO:root:[-8686, -240, -240, -240, -240, -240, -240, 240, 240, 240, 240, 240, 229]
+INFO:root:Episode 2 Counter({4: 9, 2: 4})
+INFO:root:[-10922, -6027, -251, -251, -251, -251, -251, 251, -3673, 251, 251, 251, 240]
+INFO:root:steps: 956, episodes: 4, mean episode reward: -10316.5, agent episode reward: [-5461.0, -3013.5, -125.5, -125.5, -125.5, -125.5, -125.5, 125.5, -1836.5, 125.5, 125.5, 125.5, 120.0], time: 5.558
+INFO:root:Episode 3 Counter({4: 11, 2: 2})
+INFO:root:[-1843, -161, -161, -161, -161, -161, -161, 161, 161, 161, 161, 161, 150]
+INFO:root:Episode 4 Counter({4: 10, 2: 3})
+INFO:root:[-287, -3660, -287, -7042, -287, -287, -287, 287, 287, 287, 287, 287, 276]
+INFO:root:steps: 1564, episodes: 6, mean episode reward: -5213.0, agent episode reward: [-143.5, -1830.0, -143.5, -3521.0, -143.5, -143.5, -143.5, 143.5, 143.5, 143.5, 143.5, 143.5, 138.0], time: 5.232
+INFO:root:Episode 5 Counter({3: 13})
+INFO:root:[-78, -78, -78, -78, -78, -78, -78, 78, 78, 78, 78, 78, 78]
+INFO:root:Episode 6 Counter({4: 10, 2: 3})
+INFO:root:[-3657, -195, -195, -195, -195, -195, -195, 195, 195, 195, -3820, 195, 184]
+INFO:root:steps: 2037, episodes: 8, mean episode reward: -3841.5, agent episode reward: [-1828.5, -97.5, -97.5, -97.5, -97.5, -97.5, -97.5, 97.5, 97.5, 97.5, -1910.0, 97.5, 92.0], time: 4.382
+INFO:root:Episode 7 Counter({3: 13})
+INFO:root:[-11, -11, -11, -11, -11, -11, -11, 11, 11, 11, 11, 11, 11]
+INFO:root:Episode 8 Counter({4: 12, 2: 1})
+INFO:root:[-184, -184, -184, -184, -184, -184, -184, 184, 184, 184, 184, 184, 173]
+INFO:root:steps: 2432, episodes: 10, mean episode reward: -97.5, agent episode reward: [-92.0, -92.0, -92.0, -92.0, -92.0, -92.0, -92.0, 92.0, 92.0, 92.0, 92.0, 92.0, 86.5], time: 3.812
+INFO:root:Episode 9 Counter({4: 8, 2: 5})
+INFO:root:[-217, -4569, -217, -2166, -1365, -217, -217, 217, 217, 217, -886, 217, 206]
+INFO:root:Episode 10 Counter({4: 11, 2: 2})
+INFO:root:[-965, -173, -173, -173, -173, -173, -173, 173, 173, 173, 173, 173, 162]
+INFO:root:steps: 2982, episodes: 12, mean episode reward: -488.0, agent episode reward: [-482.5, -86.5, -86.5, -86.5, -86.5, -86.5, -86.5, 86.5, 86.5, 86.5, 86.5, 86.5, 81.0], time: 4.847
+INFO:root:Episode 11 Counter({4: 8, 2: 5})
+INFO:root:[-4746, -7505, -305, -9196, -305, -305, -305, 305, -3437, 305, 305, 305, 294]
+INFO:root:Episode 12 Counter({5: 13})
+INFO:root:[-8060, -486, -486, -486, -486, -486, -486, 486, 486, 486, 486, 486, 486]
+INFO:root:steps: 3773, episodes: 14, mean episode reward: -4030.0, agent episode reward: [-4030.0, -243.0, -243.0, -243.0, -243.0, -243.0, -243.0, 243.0, 243.0, 243.0, 243.0, 243.0, 243.0], time: 6.767
+INFO:root:Episode 13 Counter({4: 9, 2: 4})
+INFO:root:[-259, -3009, -259, -259, -9061, -259, -259, 259, 259, 259, -5030, 259, 248]
+INFO:root:Episode 14 Counter({5: 13})
+INFO:root:[-17436, -12897, -7201, -339, -7290, -339, -339, 339, -8226, 339, -13686, 339, 339]
+INFO:root:steps: 4531, episodes: 16, mean episode reward: -33198.5, agent episode reward: [-8718.0, -6448.5, -3600.5, -169.5, -3645.0, -169.5, -169.5, 169.5, -4113.0, 169.5, -6843.0, 169.5, 169.5], time: 6.524
+INFO:root:Episode 15 Counter({4: 10, 2: 3})
+INFO:root:[-1369, -1280, -221, -221, -221, -221, -221, 221, 221, 221, 221, 221, 210]
+INFO:root:Episode 16 Counter({5: 13})
+INFO:root:[-20409, -22367, -16493, -464, -464, -464, -464, 464, -21114, 464, -19567, 464, 464]
+INFO:root:steps: 5376, episodes: 18, mean episode reward: -49975.0, agent episode reward: [-10204.5, -11183.5, -8246.5, -232.0, -232.0, -232.0, -232.0, 232.0, -10557.0, 232.0, -9783.5, 232.0, 232.0], time: 7.132
