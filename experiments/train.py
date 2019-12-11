@@ -67,8 +67,12 @@ def make_env(scenario_name, arglist, benchmark=False):
     if benchmark:
         env = MultiAgentEnv(world, scenario.reset_world, scenario.reward, scenario.observation, scenario.benchmark_data)
     else:
-        env = MultiAgentEnv(world, scenario.reset_world, scenario.reward, scenario.observation, None, None, None)
+        env = MultiAgentEnv(world, scenario.reset_world, scenario.reward, scenario.observation, None, None, True)
     return env
+
+    # self, world, reset_callback=None, reward_callback=None,
+    #              observation_callback=None, info_callback=None,
+    #              done_callback=None, shared_viewer=True
 
 
 # Gets trainers for each agent and adversary. NEED TO INDICATE the agents and the adversaries (agents offense, adversaries defense)
@@ -172,8 +176,8 @@ def train(arglist):
 
             # for displaying learned policies
             if arglist.display:
-                time.sleep(0.1)
-                env.render()
+                time.sleep(0.01)
+                env.render_whole_field()
                 continue
 
             # update all trainers, if not in display or benchmark mode
