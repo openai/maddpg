@@ -9,6 +9,8 @@ It is configured to be run in conjunction with environments from the
 Note: this codebase has been restructured since the original paper, and the results may
 vary from those reported in the paper.
 
+**Update:** the original implementation for policy ensemble and policy estimation can be found [here](https://www.dropbox.com/s/jlc6dtxo580lpl2/maddpg_ensemble_and_approx_code.zip?dl=0). The code is provided as-is. 
+
 ## Installation
 
 - To install, `cd` into the root directory and type `pip install -e .`
