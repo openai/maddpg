@@ -1,3 +1,11 @@
+# === Terminal에서 정상 작동시키기 위해 필요한 코드 ===
+import sys
+sys.path.append("..")
+import os
+os.environ["SUPPRESS_MA_PROMPT"] = "1"
+# ========
+
+
 import argparse
 import numpy as np
 import tensorflow as tf
