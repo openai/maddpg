@@ -2,8 +2,8 @@ import tensorflow as tf
 import numpy as np
 import maddpg.common.tf_util as U
 from tensorflow.python.ops import math_ops
-from multiagent.multi_discrete import MultiDiscrete
-from tensorflow.python.ops import nn
+from multiagent import MultiDiscrete
+
 
 class Pd(object):
     """

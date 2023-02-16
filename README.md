@@ -1,3 +1,18 @@
+## 수정사항
+
+- 일단 tensorflow 2.x 버전에서 돌아갈 수 있도록 할려면
+```
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+```
+
+- 그리고 tensorflow 1.xx 버전에서 유용하게 쓰이던 tf.contrib 이 사라졌습니다. 원래도 이게 임시로 만들어둔 그런거였는데 사람들이 너무 애용했었던 거고... 2.xx 버전에 들어와서는 없애버린 겁니다.
+- 이것을 해결하기 위해서 사람들이 만들어놓은 별도의 library가 있습니다. `pip install tf_slim`
+
+
+
+---
+
 **Status:** Archive (code is provided as-is, no updates expected)
 
 # Multi-Agent Deep Deterministic Policy Gradient (MADDPG)

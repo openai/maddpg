@@ -1,24 +1,20 @@
 # === Terminal에서 정상 작동시키기 위해 필요한 코드 ===
-import sys
-sys.path.append("..")
-import os
-# os.environ["SUPPRESS_MA_PROMPT"] = "1"
+# import sys
+# sys.path.append("..")
+# import os
+# # os.environ["SUPPRESS_MA_PROMPT"] = "1"
 # ========
 
 
 import argparse
 import numpy as np
-# import tensorflow as tf
-import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
-
+import tensorflow as tf
 import time
 import pickle
 
 import maddpg.common.tf_util as U
 from maddpg.trainer.maddpg import MADDPGAgentTrainer
-from tf_slim import layers
-# import tensorflow.contrib.layers as layers
+import tensorflow.contrib.layers as layers
 
 def parse_args():
     parser = argparse.ArgumentParser("Reinforcement Learning experiments for multiagent environments")
