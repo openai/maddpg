@@ -1,3 +1,7 @@
+## TODO 
+
+- rgb array 로 돌리는거 
+
 ## 수정사항
 
 - 일단 tensorflow 2.x 버전에서 돌아갈 수 있도록 할려면
