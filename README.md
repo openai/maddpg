@@ -1,6 +1,7 @@
 ## TODO 
 
-- rgb array 로 돌리는거 
+- rgb array 로 돌리는거
+- `$ pip install pyglet==1.5.27` 해야함 `glPushMatrix()` 또는 rendering 오류 때문
 
 ## 수정사항
 
