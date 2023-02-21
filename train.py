@@ -12,8 +12,8 @@ import tensorflow as tf
 import time
 import pickle
 
-import maddpg.common.tf_util as U
-from maddpg.trainer.maddpg import MADDPGAgentTrainer
+import maddpg_go.common.tf_util as U
+from maddpg_go.trainer.maddpg import MADDPGAgentTrainer
 import tensorflow.contrib.layers as layers
 
 def parse_args():
