@@ -2,7 +2,7 @@ import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
 import numpy as np
 
-import maddpg.common.tf_util as U
+import maddpg_go.common.tf_util as U
 from tensorflow.python.ops import math_ops
 from gymnasium.spaces import MultiDiscrete
 

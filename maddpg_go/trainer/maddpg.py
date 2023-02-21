@@ -3,11 +3,11 @@ import random
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
 
-import maddpg.common.tf_util as U
+import maddpg_go.common.tf_util as U
 
-from maddpg.common.distributions import make_pdtype
-from maddpg import AgentTrainer
-from maddpg.trainer.replay_buffer import ReplayBuffer
+from maddpg_go.common.distributions import make_pdtype
+from maddpg_go import AgentTrainer
+from maddpg_go.trainer.replay_buffer import ReplayBuffer
 
 
 def discount_with_dones(rewards, dones, gamma):
