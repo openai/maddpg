@@ -23,7 +23,7 @@ from tf_slim import layers
 def parse_args():
     parser = argparse.ArgumentParser("Reinforcement Learning experiments for multiagent environments")
     # Environment
-    parser.add_argument("--scenario", type=str, default="simple", help="name of the scenario script")
+    parser.add_argument("--scenario", type=str, default="simple_push", help="name of the scenario script")
     parser.add_argument("--max-episode-len", type=int, default=25, help="maximum episode length")
     parser.add_argument("--num-episodes", type=int, default=60000, help="number of episodes")
     parser.add_argument("--num-adversaries", type=int, default=0, help="number of adversaries")
@@ -58,8 +58,9 @@ def mlp_model(input, num_outputs, scope, reuse=False, num_units=64, rnn_cell=Non
         return out
 
 def make_env(scenario_name, arglist, benchmark=False):
-    from multiagent import MultiAgentEnv
-    import multiagent as scenarios
+    from multiagent.environment import MultiAgentEnv
+    from multiagent import scenarios
+    import multiagent
 
     # load scenario from script
     scenario = scenarios.load(scenario_name + ".py").Scenario()

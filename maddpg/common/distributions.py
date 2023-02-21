@@ -1,9 +1,11 @@
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 import numpy as np
+
 import maddpg.common.tf_util as U
 from tensorflow.python.ops import math_ops
-from multiagent import MultiDiscrete
-
+from gymnasium.spaces import MultiDiscrete
+# from pettingzoo.mpe import simple_speaker_listener_v3
 
 class Pd(object):
     """
@@ -308,7 +310,7 @@ class BernoulliPd(Pd):
         return cls(flat)
 
 def make_pdtype(ac_space):
-    from gym import spaces
+    from gymnasium import spaces
     if isinstance(ac_space, spaces.Box):
         assert len(ac_space.shape) == 1
         return DiagGaussianPdType(ac_space.shape[0])
