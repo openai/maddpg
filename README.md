@@ -2,6 +2,8 @@
 
 - rgb array 로 돌리는거
 - `$ pip install pyglet==1.5.27` 해야함 `glPushMatrix()` 또는 rendering 오류 때문
+- rendering 으로 쓸 수 있긴하지만 그건 너무..
+- 그냥 observation callback 을 수정하자
 
 ## 수정사항
 
