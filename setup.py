@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='maddpg',
-      version='0.0.1',
+      version='0.0.2',
       description='Multi-Agent Deep Deterministic Policy Gradient',
       url='https://github.com/openai/maddpg',
       author='Igor Mordatch',
