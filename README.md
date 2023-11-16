@@ -1,5 +1,3 @@
-**Status:** Archive (code is provided as-is, no updates expected)
-
 # Multi-Agent Deep Deterministic Policy Gradient (MADDPG)
 
 This is the code for implementing the MADDPG algorithm presented in the paper:
@@ -13,9 +11,19 @@ vary from those reported in the paper.
 
 ## Installation
 
+### Old instructions
+
 - To install, `cd` into the root directory and type `pip install -e .`
 
 - Known dependencies: Python (3.5.4), OpenAI gym (0.10.5), tensorflow (1.8.0), numpy (1.14.5)
+
+### Our instructions
+
+Make sure you have conda, then `cd` into this directory and type `conda env create -f environment.yml`.
+
+This will create a new Conda environment called `maddpg` with all the dependencies we need.
+
+Activate it with `conda activate maddpg`.
 
 ## Case study: Multi-Agent Particle Environments
 
