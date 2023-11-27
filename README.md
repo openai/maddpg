@@ -11,19 +11,15 @@ vary from those reported in the paper.
 
 ## Installation
 
-### Old instructions
-
-- To install, `cd` into the root directory and type `pip install -e .`
-
-- Known dependencies: Python (3.5.4), OpenAI gym (0.10.5), tensorflow (1.8.0), numpy (1.14.5)
-
-### Our instructions
+### Instructions **(UPDATED!)**
 
 Make sure you have conda, then `cd` into this directory and type `conda env create -f environment.yml`.
 
 This will create a new Conda environment called `maddpg` with all the dependencies we need.
 
 Activate it with `conda activate maddpg`.
+
+Afterwards, rename this directory from `project` to `maddpg`. Then, install it with `pip install -e .`.
 
 ## Case study: Multi-Agent Particle Environments
 
@@ -68,6 +64,8 @@ by following the `README`.
 - `--batch-size`: batch size (default: `1024`)
 
 - `--num-units`: number of units in the MLP (default: `64`)
+
+- `--preprocess`: whether or not to use our permutation invariant architecture (default: `False`) **(NEW!)**
 
 ### Checkpointing
 

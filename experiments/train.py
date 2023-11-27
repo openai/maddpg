@@ -22,6 +22,7 @@ def parse_args():
     parser.add_argument("--gamma", type=float, default=0.95, help="discount factor")
     parser.add_argument("--batch-size", type=int, default=1024, help="number of episodes to optimize at the same time")
     parser.add_argument("--num-units", type=int, default=64, help="number of units in the mlp")
+    parser.add_argument("--preprocess", action="store_true", default=False, help="whether or not to use the permutation invariant architecture")
     # Checkpointing
     parser.add_argument("--exp-name", type=str, default=None, help="name of the experiment")
     parser.add_argument("--save-dir", type=str, default="/tmp/policy/", help="directory in which training state and model should be saved")
@@ -44,6 +45,21 @@ def mlp_model(input, num_outputs, scope, reuse=False, num_units=64, rnn_cell=Non
         out = layers.fully_connected(out, num_outputs=num_units, activation_fn=tf.nn.relu)
         out = layers.fully_connected(out, num_outputs=num_outputs, activation_fn=None)
         return out
+    
+def deepset_block(input, scope, reuse=False):
+    """
+    A block that performs permutation-invariant computation.
+    Uses averaging as the pooling operation.
+    Expects an input of shape (batch_size, num_agents, obs_size + act_size).
+    """
+    num_filters = input.shape[2] # We use (obs_size + act_size) as hidden layer sizes
+    with tf.variable_scope(scope, reuse=reuse):
+        out = input
+        out = tf.layers.conv1d(out, filters=num_filters, kernel_size=1, activation=tf.nn.relu)
+        out = tf.layers.conv1d(out, filters=num_filters, kernel_size=1, activation=tf.nn.relu)
+        out = tf.layers.conv1d(out, filters=num_filters, kernel_size=1, activation=None)
+        out = tf.reduce_mean(out, 1) # Shape: (batch_size, obs_size + act_size)
+        return out
 
 def make_env(scenario_name, arglist, benchmark=False):
     from multiagent.environment import MultiAgentEnv
@@ -63,15 +79,18 @@ def make_env(scenario_name, arglist, benchmark=False):
 def get_trainers(env, num_adversaries, obs_shape_n, arglist):
     trainers = []
     model = mlp_model
+    preprocessor = None
+    if arglist.preprocess:
+        preprocessor = deepset_block
     trainer = MADDPGAgentTrainer
     for i in range(num_adversaries):
         trainers.append(trainer(
             "agent_%d" % i, model, obs_shape_n, env.action_space, i, arglist,
-            local_q_func=(arglist.adv_policy=='ddpg')))
+            local_q_func=(arglist.adv_policy=='ddpg'), preprocessor=preprocessor))
     for i in range(num_adversaries, env.n):
         trainers.append(trainer(
             "agent_%d" % i, model, obs_shape_n, env.action_space, i, arglist,
-            local_q_func=(arglist.good_policy=='ddpg')))
+            local_q_func=(arglist.good_policy=='ddpg'), preprocessor=preprocessor))
     return trainers
 
 

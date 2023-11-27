@@ -25,7 +25,7 @@ def make_update_exp(vals, target_vals):
     expression = tf.group(*expression)
     return U.function([], [], updates=[expression])
 
-def p_train(make_obs_ph_n, act_space_n, p_index, p_func, q_func, optimizer, grad_norm_clipping=None, local_q_func=False, num_units=64, scope="trainer", reuse=None):
+def p_train(make_obs_ph_n, act_space_n, p_index, p_func, q_func, optimizer, grad_norm_clipping=None, local_q_func=False, num_units=64, scope="trainer", reuse=None, preprocessor=None):
     with tf.variable_scope(scope, reuse=reuse):
         # create distribtuions
         act_pdtype_n = [make_pdtype(act_space) for act_space in act_space_n]
@@ -48,6 +48,9 @@ def p_train(make_obs_ph_n, act_space_n, p_index, p_func, q_func, optimizer, grad
         act_input_n = act_ph_n + []
         act_input_n[p_index] = act_pd.sample()
         q_input = tf.concat(obs_ph_n + act_input_n, 1)
+        if preprocessor:
+            stacked_q_input = tf.transpose(tf.concat([obs_ph_n, act_ph_n], -1), perm=[1, 0, 2])
+            q_input = preprocessor(stacked_q_input, scope="preprocessor", reuse=True)
         if local_q_func:
             q_input = tf.concat([obs_ph_n[p_index], act_input_n[p_index]], 1)
         q = q_func(q_input, 1, scope="q_func", reuse=True, num_units=num_units)[:,0]
@@ -72,7 +75,7 @@ def p_train(make_obs_ph_n, act_space_n, p_index, p_func, q_func, optimizer, grad
 
         return act, train, update_target_p, {'p_values': p_values, 'target_act': target_act}
 
-def q_train(make_obs_ph_n, act_space_n, q_index, q_func, optimizer, grad_norm_clipping=None, local_q_func=False, scope="trainer", reuse=None, num_units=64):
+def q_train(make_obs_ph_n, act_space_n, q_index, q_func, optimizer, grad_norm_clipping=None, local_q_func=False, scope="trainer", reuse=None, num_units=64, preprocessor=None):
     with tf.variable_scope(scope, reuse=reuse):
         # create distribtuions
         act_pdtype_n = [make_pdtype(act_space) for act_space in act_space_n]
@@ -83,6 +86,9 @@ def q_train(make_obs_ph_n, act_space_n, q_index, q_func, optimizer, grad_norm_cl
         target_ph = tf.placeholder(tf.float32, [None], name="target")
 
         q_input = tf.concat(obs_ph_n + act_ph_n, 1)
+        if preprocessor:
+            stacked_q_input = tf.transpose(tf.concat([obs_ph_n, act_ph_n], -1), perm=[1, 0, 2])
+            q_input = preprocessor(stacked_q_input, scope="preprocessor")
         if local_q_func:
             q_input = tf.concat([obs_ph_n[q_index], act_ph_n[q_index]], 1)
         q = q_func(q_input, 1, scope="q_func", num_units=num_units)[:,0]
@@ -110,7 +116,7 @@ def q_train(make_obs_ph_n, act_space_n, q_index, q_func, optimizer, grad_norm_cl
         return train, update_target_q, {'q_values': q_values, 'target_q_values': target_q_values}
 
 class MADDPGAgentTrainer(AgentTrainer):
-    def __init__(self, name, model, obs_shape_n, act_space_n, agent_index, args, local_q_func=False):
+    def __init__(self, name, model, obs_shape_n, act_space_n, agent_index, args, local_q_func=False, preprocessor=None):
         self.name = name
         self.n = len(obs_shape_n)
         self.agent_index = agent_index
@@ -126,6 +132,7 @@ class MADDPGAgentTrainer(AgentTrainer):
             act_space_n=act_space_n,
             q_index=agent_index,
             q_func=model,
+            preprocessor=preprocessor,
             optimizer=tf.train.AdamOptimizer(learning_rate=args.lr),
             grad_norm_clipping=0.5,
             local_q_func=local_q_func,
@@ -138,6 +145,7 @@ class MADDPGAgentTrainer(AgentTrainer):
             p_index=agent_index,
             p_func=model,
             q_func=model,
+            preprocessor=preprocessor,
             optimizer=tf.train.AdamOptimizer(learning_rate=args.lr),
             grad_norm_clipping=0.5,
             local_q_func=local_q_func,
