@@ -1,15 +1,18 @@
+
+from mlagents_envs.registry import default_registry
+from mlagents_envs.environment import UnityEnvironment
+
 import argparse
 import numpy as np
-import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
+import tensorflow as tf
 import time
 import pickle
 import os
 import maddpg.common.tf_util as U
 from maddpg.trainer.maddpg import MADDPGAgentTrainer
-import tensorflow.contrib.layers as layers
+import tensorflow.keras.layers as layers
 from datetime import datetime
-
+from mlagents_envs.envs import PettingZooEnvFactory
 current_time = datetime.now()
 
 # Format the date and time in the format you prefer, e.g., 'YYYYMMDD-HHMMSS'
@@ -50,29 +53,28 @@ def find_most_recent_directory(base_path,directories, date_format):
     # Find the directory that corresponds to the most recent date
     most_recent_directory = directories[dates.index(most_recent_date)]
     return os.path.join(base_path, most_recent_directory, most_recent_directory)
+
+
+
 def parse_args():
     parser = argparse.ArgumentParser("Reinforcement Learning experiments for multiagent environments")
     # Environment
-    parser.add_argument("--scenario", default = 'simple', type=str, help="name of the scenario script")
+    parser.add_argument("--scenario", type=str, help="name of the scenario script")
     parser.add_argument("--max-episode-len", type=int, default=25, help="maximum episode length")
     parser.add_argument("--lr", type=float, default=1e-2, help="learning rate for Adam optimizer")
-    parser.add_argument("--fixed-agent", default=False)
-    parser.add_argument("--fixed-landmark", default=False)
     parser.add_argument("--num-units", type=int, default=128, help="number of units in the mlp")
-    parser.add_argument("--location", type=float, default=0.95, help="discount factor")
+    parser.add_argument("--discount", type=float, default=0.95, help="discount factor")
     parser.add_argument("--gamma", type=float, default=0.95, help="discount factor")
     known_args, _ = parser.parse_known_args()
 
     # Now we can use the scenario in setting default values
-    scenario = known_args.scenario if known_args.scenario else "default_scenario"
+    scenario = known_args.scenario if known_args.scenario else "basic"
     maxep = known_args.max_episode_len if known_args.max_episode_len else "25"
     lr = known_args.lr if known_args.lr else "1e-2"
-    FA = "FA" if known_args.fixed_agent == 'True' else "NFA"
-    FL = "FL" if known_args.fixed_landmark == 'True' else "NFL"
     numunits = known_args.num_units if known_args.num_units else "128"
     gamma = known_args.gamma if known_args.gamma else "0.95"
 
-    base_directory_path = f"./tmp/policy/{scenario}.{maxep}.{lr}.{numunits}.{gamma}.{FA}.{FL}"
+    base_directory_path = f"./tmp/policy/{scenario}.{maxep}.{lr}.{numunits}.{gamma}"
     if not os.path.exists(base_directory_path):
         os.makedirs(base_directory_path)
     directories = get_directories(base_directory_path)
@@ -82,15 +84,18 @@ def parse_args():
         print("No previous directories found")
         most_recent_directory = ""
 
-    plot_directory_path = f"./learning_curves/{scenario}.{maxep}.{lr}.{numunits}.{gamma}.{FA}.{FL}"
+    plot_directory_path = f"./learning_curves/{scenario}.{maxep}.{lr}.{numunits}.{gamma}"
     if not os.path.exists(plot_directory_path):
         os.makedirs(plot_directory_path)
-    parser.add_argument("--num-episodes", type=int, default=15000, help="number of episodes")
+    parser.add_argument("--num-episodes", type=int, default=30000, help="number of episodes")
     parser.add_argument("--num-adversaries", type=int, default=1, help="number of adversaries")
     parser.add_argument("--good-policy", type=str, default="maddpg", help="policy for good agents")
     parser.add_argument("--adv-policy", type=str, default="maddpg", help="policy of adversaries")
     # Core training parameters
+
+
     parser.add_argument("--batch-size", type=int, default=1024, help="number of episodes to optimize at the same time")
+
     # Checkpointing
     parser.add_argument("--exp-name", type=str, default='test', help="name of the experiment")
     parser.add_argument("--save-dir", type=str, default=base_directory_path, help="directory in which training state and model should be saved")
@@ -111,24 +116,14 @@ def mlp_model(input, num_outputs, scope, reuse=False, num_units=64, rnn_cell=Non
     # This model takes as input an observation and returns values of all actions
     with tf.variable_scope(scope, reuse=reuse):
         out = input
-        out = layers.fully_connected(out, num_outputs=num_units, activation_fn=tf.nn.relu)
-        out = layers.fully_connected(out, num_outputs=num_units, activation_fn=tf.nn.relu)
-        out = layers.fully_connected(out, num_outputs=num_outputs, activation_fn=None)
+        out = layers.Dense(out, num_outputs=num_units, activation_fn=tf.nn.relu)
+
+        out = layers.Dense(out, num_outputs=num_units, activation_fn=tf.nn.relu)
+        out = layers.Dense(out, num_outputs=num_outputs, activation_fn=None)
         return out
 
 def make_env(scenario_name, arglist, benchmark=False):
-    from multiagent.environment import MultiAgentEnv
-    import multiagent.scenarios as scenarios
-
-    # load scenario from script
-    scenario = scenarios.load(scenario_name + ".py").Scenario()
-    # create world
-    world = scenario.make_world()
-    # create multiagent environment
-    if benchmark:
-        env = MultiAgentEnv(world, scenario.reset_world, scenario.reward, scenario.observation, scenario.benchmark_data)
-    else:
-        env = MultiAgentEnv(world, scenario.reset_world, scenario.reward, scenario.observation)
+    env = PettingZooEnvFactory("StrikersVsGoalie").env()
     return env
 
 def get_trainers(env, num_adversaries, obs_shape_n, arglist):
@@ -151,8 +146,10 @@ def train(arglist):
         # Create environment
         env = make_env(arglist.scenario, arglist, arglist.benchmark)
         # Create agent trainers
-        obs_shape_n = [env.observation_space[i].shape for i in range(env.n)]
-        num_adversaries = min(env.n, arglist.num_adversaries)
+        n = len(env.agents)
+        obs_shape_n = [env.observation_space[i].shape for i in range(n)]
+        # num_adversaries = min(n, arglist.num_adversaries)
+        num_adversaries = 0
         trainers = get_trainers(env, num_adversaries, obs_shape_n, arglist)
         print('Using good policy {} and adv policy {}'.format(arglist.good_policy, arglist.adv_policy))
 
@@ -177,14 +174,10 @@ def train(arglist):
         episode_step = 0
         train_step = 0
         t_start = time.time()
-        print('obs_n', obs_n)
-        print('obs_shape_n', obs_shape_n)
-        print('env.action_space', env.action_space)
-        print('n_agents', env.n)
+
         print('Starting iterations...')
         while True:
             # get action
-            # print(obs_n[0].shape, obs_n.shape)
             action_n = [agent.action(obs) for agent, obs in zip(trainers,obs_n)]
             # environment step
             new_obs_n, rew_n, done_n, info_n = env.step(action_n)
@@ -282,4 +275,6 @@ def train(arglist):
 
 if __name__ == '__main__':
     arglist = parse_args()
+    print("here")
+
     train(arglist)
