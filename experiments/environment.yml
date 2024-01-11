@@ -1,12 +1,10 @@
 name: base
 channels:
-  - conda-forge
   - defaults
 dependencies:
-  - _anaconda_depends=2022.10=py39_2
   - _ipyw_jlab_nb_ext_conf=0.1.0=py39hecd8cb5_1
   - alabaster=0.7.12=pyhd3eb1b0_0
-  - anaconda=custom=py39_2
+  - anaconda=2022.10=py39_0
   - anaconda-client=1.11.0=py39hecd8cb5_0
   - anaconda-navigator=2.4.0=py39hecd8cb5_0
   - anaconda-project=0.11.1=py39hecd8cb5_0
@@ -20,7 +18,6 @@ dependencies:
   - arrow=1.2.2=pyhd3eb1b0_0
   - astroid=2.11.7=py39hecd8cb5_0
   - astropy=5.1=py39h67323c0_0
-  - asttokens=2.0.5=pyhd3eb1b0_0
   - atomicwrites=1.4.0=py_0
   - attrs=21.4.0=pyhd3eb1b0_0
   - automat=20.2.0=py_0
@@ -51,10 +48,10 @@ dependencies:
   - brunsli=0.1=h23ab428_0
   - bzip2=1.0.8=h1de35cc_0
   - c-ares=1.18.1=hca72f7f_0
-  - ca-certificates=2023.12.12=hecd8cb5_0
+  - ca-certificates=2022.07.19=hecd8cb5_0
   - cctools=949.0.1=h9abeeb2_25
   - cctools_osx-64=949.0.1=hc7db93f_25
-  - certifi=2023.11.17=py39hecd8cb5_0
+  - certifi=2022.9.24=py39hecd8cb5_0
   - cffi=1.15.1=py39hc55c11b_0
   - cfitsio=3.470=hbd21bf8_7
   - chardet=4.0.0=py39hecd8cb5_1003
@@ -98,7 +95,6 @@ dependencies:
   - docutils=0.18.1=py39hecd8cb5_3
   - entrypoints=0.4=py39hecd8cb5_0
   - et_xmlfile=1.1.0=py39hecd8cb5_0
-  - executing=0.8.3=pyhd3eb1b0_0
   - fftw=3.3.9=h9ed2024_1
   - filelock=3.6.0=pyhd3eb1b0_0
   - flake8=4.0.1=pyhd3eb1b0_1
@@ -123,7 +119,6 @@ dependencies:
   - holoviews=1.15.0=py39hecd8cb5_0
   - hvplot=0.8.0=py39hecd8cb5_0
   - hyperlink=21.0.0=pyhd3eb1b0_0
-  - icecream=2.1.3=pyhd8ed1ab_0
   - icu=58.2=h0a44026_3
   - idna=3.3=pyhd3eb1b0_0
   - imagecodecs=2021.8.26=py39h0f85e6e_1
@@ -148,6 +143,7 @@ dependencies:
   - jdcal=1.4.1=pyhd3eb1b0_0
   - jedi=0.18.1=py39hecd8cb5_1
   - jellyfish=0.9.0=py39hca72f7f_0
+  - jinja2=2.11.3=pyhd3eb1b0_0
   - jinja2-time=0.2.0=pyhd3eb1b0_3
   - jmespath=0.10.0=pyhd3eb1b0_0
   - joblib=1.1.0=pyhd3eb1b0_0
@@ -251,13 +247,12 @@ dependencies:
   - nss=3.74=h47edf6a_0
   - numba=0.55.1=py39hae1ba45_0
   - numexpr=2.8.3=py39h2e5f0a9_0
-  - numpy-base=1.21.5=py39h3b1a694_3
   - numpydoc=1.4.0=py39hecd8cb5_0
   - olefile=0.46=pyhd3eb1b0_0
   - oniguruma=6.9.7.1=h9ed2024_0
   - openjpeg=2.4.0=h66ea3da_0
   - openpyxl=3.0.10=py39hca72f7f_0
-  - openssl=1.1.1w=hca72f7f_0
+  - openssl=1.1.1q=hca72f7f_0
   - packaging=21.3=pyhd3eb1b0_0
   - pandas=1.4.4=py39he9d5cce_0
   - pandocfilters=1.5.0=pyhd3eb1b0_0
@@ -449,36 +444,28 @@ dependencies:
       - absl-py==2.0.0
       - astunparse==1.6.3
       - cachetools==5.3.2
-      - farama-notifications==0.0.4
       - flatbuffers==23.5.26
-      - gast==0.4.0
-      - glfw==2.6.4
+      - gast==0.5.4
       - google-auth==2.23.3
       - google-auth-oauthlib==1.0.0
       - google-pasta==0.2.0
       - grpcio==1.59.0
       - gym==0.26.2
       - gym-notices==0.0.8
-      - gymnasium==0.29.1
-      - gymnasium-robotics==1.2.4
-      - jinja2==3.1.2
-      - keras==2.15.0
+      - keras==2.14.0
       - libclang==16.0.6
       - ml-dtypes==0.2.0
-      - mujoco==2.3.7
-      - numpy==1.24.3
+      - numpy==1.26.1
       - numpy-stl==3.0.1
       - oauthlib==3.2.2
       - opt-einsum==3.3.0
-      - pettingzoo==1.24.2
-      - protobuf==4.23.4
-      - pyopengl==3.1.7
+      - protobuf==4.24.4
       - python-utils==3.8.1
       - requests-oauthlib==1.3.1
       - rsa==4.9
-      - tensorboard==2.15.1
+      - tensorboard==2.14.1
       - tensorboard-data-server==0.7.2
-      - tensorflow==2.15.0
-      - tensorflow-estimator==2.15.0
+      - tensorflow==2.14.0
+      - tensorflow-estimator==2.14.0
       - tensorflow-io-gcs-filesystem==0.34.0
       - termcolor==2.3.0
