@@ -53,44 +53,50 @@ def find_most_recent_directory(base_path,directories, date_format):
     most_recent_date = max(dates)
     # Find the directory that corresponds to the most recent date
     most_recent_directory = directories[dates.index(most_recent_date)]
+    # return most_recent_directory
     return os.path.join(base_path, most_recent_directory, most_recent_directory)
-
 
 
 def parse_args_n_config():
     parser = argparse.ArgumentParser("Reinforcement Learning experiments for multiagent environments")
-    parser.add_argument("--config", default='config.yaml')
+    parser.add_argument("--config", default='ant_config_2.yaml')
     parser.add_argument("--starting_run", default=0, type=int)
     parser.add_argument("--final_run", default=int(1e6), type=int)
-
+    parser.add_argument("--train", default=True, type=bool)
     # Environment
-    # parser.add_argument("--scenario", default='Ant',type=str, help="name of the scenario script")
     parser.add_argument("--max-episode-len", type=int, default=25, help="maximum episode length")
     parser.add_argument("--lr", type=float, default=1e-3, help="learning rate for Adam optimizer")
     parser.add_argument("--num-units", type=int, default=350, help="number of units in the mlp")
-    # parser.add_argument("--location", type=float, default=0.95, help="discount factor")
-    parser.add_argument("--gamma", type=float, default=1, help="discount factor")
+    parser.add_argument("--gamma", type=float, default=0.99, help="discount factor")
     parser.add_argument("--partition", type=str, default="2x4", help="agent configuration file")
 
     parser.add_argument("--num-episodes", type=int, default=30000, help="number of episodes")
     parser.add_argument("--num-adversaries", type=int, default=1, help="number of adversaries")
     parser.add_argument("--good-policy", type=str, default="maddpg", help="policy for good agents")
     parser.add_argument("--adv-policy", type=str, default="maddpg", help="policy of adversaries")
+
     # Core training parameters
     parser.add_argument("--batch-size", type=int, default=100, help="number of episodes to optimize at the same time")
+    parser.add_argument("--buffer_size", type=int, default=int(1e6), help="buffer size")
 
-    args = parser.parse_args()
-    config = yaml.safe_load(open(args.config, 'r'))
+    #Checkpointing
+    # parser.add_argument("--save-rate", type=int, default=1000,
+    #                     help="save model once every time this many episodes are completed")
+    # parser.add_argument("--benchmark", action="store_true", default=False)
+    # parser.add_argument("--benchmark-iters", type=int, default=100000)
+    # # Evaluation
+    # parser.add_argument("--restore", action="store_true", default=False)
+    # parser.add_argument("--display", action="store_true", default=False)
+
+
 
     known_args, _ = parser.parse_known_args()
+    config = yaml.safe_load(open(known_args.config, 'r'))
 
     # Now we can use the scenario in setting default values
     scenario = config['domain']['name']
     adjugate = config['domain']['factorization']
-    maxep = known_args.max_episode_len if known_args.max_episode_len else "25"
     lr = known_args.lr if known_args.lr else "1e-2"
-    # FA = "FA" if known_args.fixed_agent == 'True' else "NFA"
-    # FL = "FL" if known_args.fixed_landmark == 'True' else "NFL"
     numunits = known_args.num_units if known_args.num_units else "128"
     gamma = known_args.gamma if known_args.gamma else "0.95"
 
@@ -104,34 +110,36 @@ def parse_args_n_config():
         print("No previous directories found")
         most_recent_directory = ""
 
-    plot_directory_path = f"./learning_curves/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}"
-    load_dir = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/{most_recent_directory}"
+    plot_directory_path = f"./learning_curves/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/"
+    load_dir = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/"
+
+    # print("Base directory path: ", base_directory_path)
+    # print("Most recent directory: ", most_recent_directory)
+    # print("Plot directory path: ", plot_directory_path)
+    # print("Load directory: ", load_dir)
+    # print(config['maddpg']['save_dir'])
+    # print(config['maddpg']['load_dir'])
     if not os.path.exists(plot_directory_path):
         os.makedirs(plot_directory_path)
     # Checkpointing
-    parser.add_argument("--exp-name", type=str, default='test', help="name of the experiment")
-    parser.add_argument("--save-dir", type=str, default=base_directory_path,
-                        help="directory in which training state and model should be saved")
-    parser.add_argument("--save-rate", type=int, default=500,
-                        help="save model once every time this many episodes are completed")
-    parser.add_argument("--load-dir", type=str, default=most_recent_directory,
-                        help="directory in which training state and model are loaded")
-    # Evaluation
-    parser.add_argument("--restore", action="store_true", default=False)
-    parser.add_argument("--display", action="store_true", default=True)
-
-    parser.add_argument("--benchmark", action="store_true", default=False)
-    parser.add_argument("--benchmark-iters", type=int, default=100000,
-                        help="number of iterations run for benchmarking")
-    parser.add_argument("--benchmark_files", type=str, default="./benchmark_files/",
-                        help="directory where benchmark data is saved")
-    parser.add_argument("--plots-dir", type=str, default=plot_directory_path,
-                        help="directory where plot data is saved")
+    # parser.add_argument("--exp-name", type=str, default='test', help="name of the experiment")
+    # parser.add_argument("--save-dir", type=str, default=base_directory_path,
+    #                     help="directory in which training state and model should be saved")
+    # parser.add_argument("--load-dir", type=str, default=most_recent_directory,
+    #                     help="directory in which training state and model are loaded")
+    # parser.add_argument("--benchmark_files", type=str, default="./benchmark_files/",
+    #                     help="directory where benchmark data is saved")
+    # parser.add_argument("--plots-dir", type=str, default=plot_directory_path,
+    #                     help="directory where plot data is saved")
     args = parser.parse_args()
-    if (args.restore or args.display or args.benchmark) and args.load_dir == "":
-        args.load_dir = load_dir
+    # if (args.restore or args.display or args.benchmark) and args.load_dir == "":
+    #     args.load_dir = load_dir
 
-
+    if (config['maddpg']['restore'] or config['maddpg']['display'] or config['maddpg']['benchmark']) or config['maddpg']['load_dir'] == "":
+        config['maddpg']['load_dir'] = most_recent_directory
+    if (config['maddpg']['restore'] or config['maddpg']['display'] or config['maddpg']['benchmark']) or config['maddpg']['save_dir'] == "":
+        config['maddpg']['save_dir'] = base_directory_path
+    config['maddpg']['plots_dir'] = plot_directory_path
     return args, config # return both args and config
 
 def mlp_model(input, num_outputs, scope, reuse=False, num_units=64, rnn_cell=None):
@@ -143,16 +151,17 @@ def mlp_model(input, num_outputs, scope, reuse=False, num_units=64, rnn_cell=Non
         out = tf.compat.v1.layers.dense(out, units=num_outputs, activation=None)
         return out
 
-def make_env(arglist, config, benchmark=False):
-    if config['domain']['name'] == "Ant":
+def make_env(arglist, config, show=False):
+    if show or config['maddpg']['display']:
         env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],
                                        agent_obsk=config['domain']['obsk'],
-                                       local_categories=[['qpos', 'qvel'], ['qpos']], render_mode='rgb_array')
+                                       local_categories=[['qpos', 'qvel'], ['qpos']], render_mode='human')
                                        # include_cfrc_ext_in_observation=False)
     else:
         env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],
                                        agent_obsk=config['domain']['obsk'],
-                                       local_categories=[['qpos', 'qvel'], ['qpos']], render_mode='rgb_array')
+                                       local_categories=[['qpos', 'qvel'], ['qpos']])
+
     return env
 
 def get_trainers(env, num_adversaries, obs_shape_n, action_shape_n, config, arglist):
@@ -173,7 +182,7 @@ def get_trainers(env, num_adversaries, obs_shape_n, action_shape_n, config, argl
 def train(arglist, config):
     with U.single_threaded_session():
         # Create environment
-        env = make_env(arglist, config, config['maddpg']['benchmark'])
+        env = make_env(arglist, config, show=False)
         # Create agent trainers
         n_agents = len(env.possible_agents)
         actions_spaces = [env.action_space(agent) for agent in env.possible_agents]
@@ -189,15 +198,17 @@ def train(arglist, config):
 
         # Load previous results, if necessary
         if config['maddpg']['load_dir'] == "":
-            config['maddpg']['load_dir'] = config['maddpg']['load_dir']
+            config['maddpg']['load_dir'] = config['maddpg']['save_dir']
         if config['maddpg']['display'] or config['maddpg']['restore'] or config['maddpg']['benchmark']:
             print('Loading previous state...')
+            print(config['maddpg']['load_dir'])
             U.load_state(config['maddpg']['load_dir'])
 
         episode_rewards = [0.0]  # sum of rewards for all agents
         agent_rewards = [[0.0] for _ in range(n_agents)]  # individual agent reward
         final_ep_rewards = []  # sum of rewards for training curve
         final_ep_ag_rewards = []  # agent rewards for training curve
+        time_steps = []
         validation_success = []
         agent_info = [[[]]]  # placeholder for benchmarking info
         saver = tf.train.Saver()
@@ -207,6 +218,7 @@ def train(arglist, config):
         episode_step = 0
         train_step = 0
         t_start = time.time()
+        tot_steps = 0
 
         print('Starting iterations...')
         while True:
@@ -254,13 +266,15 @@ def train(arglist, config):
             new_state = [np.array(state, dtype=np.float32) for state in new_state_dict.values()]
             cur_state = new_state
 
-            episode_step += 1
             done = all(is_terminal_dict.values()) or all(is_truncated_dict.values())
 
             # collect experience
             for i, rew in enumerate(reward_dict.values()):
                 episode_rewards[-1] += rew
                 agent_rewards[i][-1] += rew
+
+            # increment global step counter
+            train_step += 1
 
             if done or terminal:
                 cur_state_dict = env.reset()[0]
@@ -271,8 +285,7 @@ def train(arglist, config):
                     a.append(0)
                 agent_info.append([[]])
 
-            # increment global step counter
-            train_step += 1
+
 
             # for benchmarking learned policies
             # if arglist.benchmark:
@@ -287,7 +300,14 @@ def train(arglist, config):
             #     continue
 
             # for displaying learned policies
-            if arglist.display:
+            if arglist.train and len(episode_rewards) % config['maddpg']['save_rate'] == 0 and config['maddpg']['display']:
+                env = make_env(arglist, config, True)
+                cur_state_dict = env.reset()[0]
+                cur_state = [np.array(state, dtype=np.float32) for state in cur_state_dict.values()]
+            if arglist.train and len(episode_rewards) % config['maddpg']['save_rate'] + 50 == 0 and config['maddpg']['display']:
+                env = make_env(arglist, config, False)
+
+            if config['maddpg']['display']:
                 time.sleep(0.1)
                 env.render()
                 continue
@@ -299,9 +319,12 @@ def train(arglist, config):
             for agent in trainers:
                 loss = agent.update(trainers, train_step)
 
+
             # save model, display training output
-            if (done or terminal) and (len(episode_rewards) % arglist.save_rate == 0):
-                full_directory_path = os.path.join(arglist.save_dir, directory_name_with_time)
+            if (done or terminal) and (len(episode_rewards) % config['maddpg']['save_rate'] == 0):
+
+                full_directory_path = os.path.join(config['maddpg']['save_dir'], directory_name_with_time)
+                print(full_directory_path)
                 if not os.path.exists(full_directory_path):
                     os.makedirs(full_directory_path)  # Create the directory since it does not exist
                 U.save_state(os.path.join(full_directory_path, directory_name_with_time), saver=saver)
@@ -311,27 +334,34 @@ def train(arglist, config):
                 #         train_step, len(episode_rewards), np.mean(episode_rewards[-arglist.save_rate:]), round(time.time()-t_start, 3)))
                 # else:
                 print("steps: {}, episodes: {}, mean episode reward: {}, agent episode reward: {}, time: {}".format(
-                    train_step, len(episode_rewards), np.mean(episode_rewards[-arglist.save_rate:]),
-                    [np.mean(rew[-arglist.save_rate:]) for rew in agent_rewards], round(time.time()-t_start, 3)))
+                    train_step, len(episode_rewards), np.mean(episode_rewards[-config['maddpg']['save_rate']:]),
+                    [np.mean(rew[-config['maddpg']['save_rate']:]) for rew in agent_rewards], round(time.time()-t_start, 3)))
                 t_start = time.time()
                 # Keep track of final episode reward
-                final_ep_rewards.append(np.mean(episode_rewards[-arglist.save_rate:]))
+                final_ep_rewards.append(np.mean(episode_rewards[-config['maddpg']['save_rate']:]))
                 for rew in agent_rewards:
-                    final_ep_ag_rewards.append(np.mean(rew[-arglist.save_rate:]))
+                    final_ep_ag_rewards.append(np.mean(rew[-config['maddpg']['save_rate']:]))
+                time_steps.append(train_step)
+
 
             # saves final episode reward for plotting training curve later
-            if len(episode_rewards) > arglist.num_episodes:
-                full_directory_path = os.path.join(arglist.plots_dir, directory_name_with_time)
+            # if len(episode_rewards) > arglist.num_episodes:
+            if config['domain']['total_timesteps'] < train_step:
+                full_directory_path = os.path.join(config['maddpg']['plots_dir'], directory_name_with_time)
+                print(full_directory_path)
                 if not os.path.exists(full_directory_path):
                     os.makedirs(full_directory_path)  # Create the directory since it does not exist
 
-                rew_file_name = os.path.join(full_directory_path, arglist.exp_name + '_rewards.pkl')
+                rew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_rewards.pkl')
                 with open(rew_file_name, 'wb') as fp:
                     pickle.dump(final_ep_rewards, fp)
-                agrew_file_name = os.path.join(full_directory_path, arglist.exp_name + '_agrewards.pkl')
+                agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_agrewards.pkl')
                 with open(agrew_file_name, 'wb') as fp:
                     pickle.dump(final_ep_ag_rewards, fp)
-                validation_success_file_name = os.path.join(full_directory_path, arglist.exp_name + '_validation_success.pkl')
+                agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_timesteps.pkl')
+                with open(agrew_file_name, 'wb') as fp:
+                    pickle.dump(time_steps, fp)
+                validation_success_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_validation_success.pkl')
                 with open(validation_success_file_name, 'wb') as fp:
                     pickle.dump(validation_success, fp)
                 print('...Finished total of {} episodes.'.format(len(episode_rewards)))
