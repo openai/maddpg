@@ -1,7 +1,11 @@
 maddpg:
   good_policy: "maddpg"
   adv_policy: "maddpg"
+<<<<<<< HEAD
   save_rate: 500
+=======
+  save_rate: 20
+>>>>>>> 733d15a (changes)
   restore: False
   display: False
   benchmark: False

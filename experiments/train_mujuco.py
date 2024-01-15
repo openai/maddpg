@@ -137,8 +137,7 @@ def parse_args_n_config():
 
     if (config['maddpg']['restore'] or config['maddpg']['display'] or config['maddpg']['benchmark']) or config['maddpg']['load_dir'] == "":
         config['maddpg']['load_dir'] = most_recent_directory
-    if (config['maddpg']['restore'] or config['maddpg']['display'] or config['maddpg']['benchmark']) or config['maddpg']['save_dir'] == "":
-        config['maddpg']['save_dir'] = base_directory_path
+    config['maddpg']['save_dir'] = base_directory_path
     config['maddpg']['plots_dir'] = plot_directory_path
     return args, config # return both args and config
 
@@ -365,6 +364,7 @@ def train(arglist, config):
                 with open(validation_success_file_name, 'wb') as fp:
                     pickle.dump(validation_success, fp)
                 print('...Finished total of {} episodes.'.format(len(episode_rewards)))
+                # tf.reset_default_graph()
                 break
             cur_state = next_state
 

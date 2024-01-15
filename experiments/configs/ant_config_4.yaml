@@ -1,7 +1,7 @@
 maddpg:
   good_policy: "maddpg"
   adv_policy: "maddpg"
-  save_rate: 500
+  save_rate: 20
   restore: False
   display: False
   benchmark: False

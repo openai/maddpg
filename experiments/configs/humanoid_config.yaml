@@ -12,8 +12,8 @@ maddpg:
   load_dir: "./tmp/"
   save_dir: "./tmp/policy/"
 domain:
-  name: HalfCheetah
-  factorization: 6x1 # agent factorization used, check MaMuJoCo Doc for more info
+  name: Humanoid
+  factorization: 3x1 # agent factorization used, check MaMuJoCo Doc for more info
   obsk: 1 # check MaMuJoCo Doc for more info
   total_timesteps: 1_000_000 # how many learn steps the agent should take
   #episodes: 1000
