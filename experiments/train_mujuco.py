@@ -95,7 +95,10 @@ def parse_args_n_config():
 
     # Now we can use the scenario in setting default values
     scenario = config['domain']['name']
-    adjugate = config['domain']['factorization']
+    if config['domain']['factorization'] == '9|8':
+        adjugate = '9x8'
+    else:
+        adjugate = config['domain']['factorization']
     lr = known_args.lr if known_args.lr else "1e-2"
     numunits = known_args.num_units if known_args.num_units else "128"
     gamma = known_args.gamma if known_args.gamma else "0.95"
