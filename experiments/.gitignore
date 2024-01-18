@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Git Ignore File
 
 # Ignore specific configuration files
@@ -8,3 +9,9 @@ learning_curves/
 
 # Additionally, always ignore the .gitignore file itself
 .gitignore
+=======
+
+./configs/
+
+./.gitignore
+>>>>>>> cc2c223 (.)
