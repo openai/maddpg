@@ -147,19 +147,27 @@ def mlp_model(input, num_outputs, scope, reuse=False, num_units=64, rnn_cell=Non
         # Use tf.compat.v1.layers or tf.layers for fully_connected layers
         out = tf.compat.v1.layers.dense(out, units=num_units, activation=tf.nn.relu)
         out = tf.compat.v1.layers.dense(out, units=num_units, activation=tf.nn.relu)
-        out = tf.compat.v1.layers.dense(out, units=num_outputs, activation=None)
+        out = tf.compat.v1.layers.dense(out, units=num_outputs, activation=tf.nn.tanh)
         return out
 
 def make_env(arglist, config, show=False):
     if show or config['maddpg']['display']:
-        env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],
-                                       agent_obsk=config['domain']['obsk'],
-                                       local_categories=[['qpos', 'qvel'], ['qpos']], render_mode='human')
-                                       # include_cfrc_ext_in_observation=False)
+        if config['domain']['name'] == 'Ant':
+            env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],healthy_reward=0.1,
+                                     max_episode_steps=config['domain']['max_episode_len'],
+                                           agent_obsk=config['domain']['obsk'], render_mode='human')
+        else:
+            env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],
+                                           agent_obsk=config['domain']['obsk'], render_mode='human')
+                                           # include_cfrc_ext_in_observation=False)
     else:
-        env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],
-                                       agent_obsk=config['domain']['obsk'],
-                                       local_categories=[['qpos', 'qvel'], ['qpos']])
+        if config['domain']['name'] == 'Ant':
+            env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],healthy_reward=0.1,
+                                     max_episode_steps=config['domain']['max_episode_len'],
+                                           agent_obsk=config['domain']['obsk'])
+        else:
+            env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],
+                                           agent_obsk=config['domain']['obsk'])
 
     return env
 
@@ -217,6 +225,7 @@ def train(arglist, config):
         episode_step = 0
         train_step = 0
         t_start = time.time()
+        t_total = time.time()
         tot_steps = 0
 
         print('Starting iterations...')
@@ -363,7 +372,7 @@ def train(arglist, config):
                 validation_success_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_validation_success.pkl')
                 with open(validation_success_file_name, 'wb') as fp:
                     pickle.dump(validation_success, fp)
-                print('...Finished total of {} episodes.'.format(len(episode_rewards)))
+                print('...Finished total of {} episodes. Time: {}'.format(len(episode_rewards), time.time() - t_total))
                 # tf.reset_default_graph()
                 break
             cur_state = next_state
