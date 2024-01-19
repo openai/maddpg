@@ -190,6 +190,7 @@ def get_trainers(env, num_adversaries, obs_shape_n, action_shape_n, config, argl
     return trainers
 
 
+
 def train(arglist, config):
     with U.single_threaded_session():
         # Create environment
