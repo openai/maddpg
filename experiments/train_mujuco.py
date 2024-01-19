@@ -106,6 +106,7 @@ def parse_args_n_config():
     directories = get_directories(base_directory_path)
     date_directories = filter_directories_by_date(directories, date_time_format)
     most_recent_directory = find_most_recent_directory(base_directory_path, date_directories, date_time_format)
+
     if most_recent_directory is None:
         print("No previous directories found")
         most_recent_directory = ""
@@ -228,7 +229,9 @@ def train(arglist, config):
         t_total = time.time()
         tot_steps = 0
 
+        print(str(config['domain']['name']))
         print('Starting iterations...')
+
         while True:
             # cur_state_full = torch.tensor(env.state(), dtype=torch.float32, device=TORCH_DEVICE)
             # cur_state_full = np.array(env.state(), dtype=np.float32)

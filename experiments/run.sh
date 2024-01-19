@@ -14,8 +14,8 @@ git add ./learning_curves/Ant.4x2.0.001.350.0.99/ ./tmp/policy/Ant.4x2.0.001.350
 git add ./learning_curves/Ant.2x4.0.001.350.0.99/ ./tmp/policy/Ant.2x4.0.001.350.0.99/
 git add ./learning_curves/HalfCheetah.2x3.0.001.350.0.99/ ./tmp/policy/HalfCheetah.2x3.0.001.350.0.99/
 git add ./learning_curves/HalfCheetah.6x1.0.001.350.0.99/ ./tmp/policy/HalfCheetah.6x1.0.001.350.0.99/
-git add ./learning_curves/HumanoidStandup.6x1.0.001.350.0.99/ ./tmp/policy/HumanoidStandup.6x1.0.001.350.0.99/
-git add ./learning_curves/Humanoid.6x1.0.001.350.0.99/ ./tmp/policy/Humanoid.6x1.0.001.350.0.99/
+git add ./learning_curves/HumanoidStandup.9x8.0.001.350.0.99/ ./tmp/policy/HumanoidStandup.9x8.0.001.350.0.99/
+git add ./learning_curves/Humanoid.9x8.0.001.350.0.99/ ./tmp/policy/Humanoid.9x8.0.001.350.0.99/
 
 # Step 3: Commit the changes
 # The date and time are included in the commit message for tracking
