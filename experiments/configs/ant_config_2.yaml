@@ -1,7 +1,7 @@
 maddpg:
   good_policy: "maddpg"
   adv_policy: "maddpg"
-  save_rate: 20
+  save_rate: 100
   restore: False
   display: False
   benchmark: False
@@ -16,11 +16,16 @@ domain:
   factorization: 2x4 # agent factorization used, check MaMuJoCo Doc for more info
   obsk: 1 # check MaMuJoCo Doc for more info
   total_timesteps: 1_000_000 # how many learn steps the agent should take
+  malfunction: False
+  malfunction_episode: 30000 # at which episode should the agent start malfunctioning
   #episodes: 1000
   algo: TD3 # Valid values: 'DDPG', 'TD3', 'TD3-cc'
   init_learn_timestep: 25001 # at which timestep should the agent start learning
   #learning_starts_ep: 10 # Start Learning at episode X, before that fill the ERB with random actions
   evaluation_frequency: 5000 # how ofter should the agent be evaluated
-  max_episode_len: 1000 # how many steps should the agent take per episode
-  runs: 10 # number of statistical runs
+  max_episode_len: 100 # how many steps should the agent take per episode
+  runs: 5 # number of statistical runs
   seed: 64 # seeds the enviroment
+  test_episodes: 1000
+  display_rate: 100
+

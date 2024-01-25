@@ -21,6 +21,9 @@ domain:
   init_learn_timestep: 25001 # at which timestep should the agent start learning
   #learning_starts_ep: 10 # Start Learning at episode X, before that fill the ERB with random actions
   evaluation_frequency: 5000 # how ofter should the agent be evaluated
-  runs: 10 # number of statistical runs
+  runs: 5 # number of statistical runs
   seed: 64 # seeds the enviroment
+  malfunction: False
   malfunction_episode: 1000 # at which episode should the agent start malfunctioning
+  test_episodes: 1000
+  display_rate: 100
