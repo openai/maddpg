@@ -5,8 +5,7 @@ train_model () {
     config_path=$1
     script=$2
     echo "Training run $i for configuration: $config_path"
-    /home/pearl0/miniconda3/envs/MMJC-maddpg/bin/python script --config $config_path --train True
-    done
+    /home/pearl0/miniconda3/envs/MMJC-maddpg/bin/python $script --config $config_path --train True
 }
 
 # Training models with different configurations
@@ -43,4 +42,4 @@ commit_changes ./learning_curves/Humanoid.9x8.0.001.350.0.99/ ./tmp/policy/Human
 git push origin UNITYxMaMuJuCo
 
 # Shutdown the system
-sudo shutdown now
+sudo shutdown -h now
