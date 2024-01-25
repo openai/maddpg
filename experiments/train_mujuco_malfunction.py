@@ -358,7 +358,7 @@ def train(arglist, config):
 
                 # save model, display training output
                 if (done or terminal) and (len(episode_rewards) % config['maddpg']['save_rate'] == 0):
-                    full_directory_path = os.path.join(config['maddpg']['save_dir'], directory_name_with_time)
+                    full_directory_path = os.path.join(config['maddpg']['save_dir'] + 'malfunction', directory_name_with_time)
                     # print(full_directory_path)
                     if not os.path.exists(full_directory_path):
                         os.makedirs(full_directory_path)  # Create the directory since it does not exist
@@ -391,7 +391,7 @@ def train(arglist, config):
         all_ag_runs.append(np.array(final_ep_ag_rewards))
         all_time_steps.append(np.array(time_steps))
 
-    full_directory_path = os.path.join(config['maddpg']['plots_dir'], directory_name_with_time)
+    full_directory_path = os.path.join(config['maddpg']['plots_dir'] + 'malfunction', directory_name_with_time)
     # print(full_directory_path)
     if not os.path.exists(full_directory_path):
         os.makedirs(full_directory_path)  # Create the directory since it does not exist
