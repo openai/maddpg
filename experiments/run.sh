@@ -3,19 +3,25 @@
 # Function to train a model with a given configuration
 train_model () {
     config_path=$1
-    for i in {1..5}; do
-        echo "Training run $i for configuration: $config_path"
-        /home/pearl0/miniconda3/envs/MMJC-maddpg/bin/python ./train_mujuco.py --config $config_path --train True
+    script=$2
+    echo "Training run $i for configuration: $config_path"
+    /home/pearl0/miniconda3/envs/MMJC-maddpg/bin/python script --config $config_path --train True
     done
 }
 
 # Training models with different configurations
-train_model ./configs/ant_config_2.yaml
-train_model ./configs/ant_config_4.yaml
-train_model ./configs/cheetah_config_3.yaml
-train_model ./configs/cheetah_config_6.yaml
-train_model ./configs/humanoid_config.yaml
-train_model ./configs/humanoidstandup_config.yaml
+train_model ./configs/ant_config_2.yaml ./train_mujuco.py
+train_model ./configs/ant_config_4.yaml ./train_mujuco.py
+train_model ./configs/cheetah_config_3.yaml ./train_mujuco.py
+train_model ./configs/cheetah_config_6.yaml ./train_mujuco.py
+train_model ./configs/humanoid_config.yaml ./train_mujuco.py
+train_model ./configs/humanoidstandup_config.yaml ./train_mujuco.py
+
+# Train malfunction
+train_model ./configs/ant_config_2.yaml ./train_mujuco_malfunction.py
+train_model ./configs/ant_config_4.yaml ./train_mujuco_malfunction.py
+
+
 
 # Function to add and commit changes to Git
 commit_changes () {
