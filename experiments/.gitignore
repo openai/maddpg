@@ -2,7 +2,7 @@
 # Git Ignore File
 
 # Ignore specific configuration files
-#configs/
+configs/
 plots/
 tmp/
 learning_curves/
