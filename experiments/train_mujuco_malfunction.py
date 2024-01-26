@@ -202,212 +202,208 @@ def train(arglist, config):
     all_ep_runs = []
     all_ag_runs = []
     all_time_steps = []
-    for run in range(config['domain']['runs']):
-        print("Run: ", run)
-        with U.single_threaded_session():
-            # Create environment
-            env = make_env(arglist, config, show=False)
-            # Create agent trainers
-            n_agents = len(env.possible_agents)
-            actions_spaces = [env.action_space(agent) for agent in env.possible_agents]
+    with U.single_threaded_session():
+        # Create environment
+        env = make_env(arglist, config, show=False)
+        # Create agent trainers
+        n_agents = len(env.possible_agents)
+        actions_spaces = [env.action_space(agent) for agent in env.possible_agents]
 
-            observations_spaces = [env.observation_space(agent).shape for agent in env.possible_agents]
-            # print("Observation space: ", observations_spaces)
-            # print("Action space: ",         actions_spaces)
-            trainers = get_trainers(env, 0, observations_spaces, actions_spaces, config, arglist)
-            print('Using good policy {} and adv policy {}'.format(config['maddpg']['good_policy'], config['maddpg']['adv_policy']))
+        observations_spaces = [env.observation_space(agent).shape for agent in env.possible_agents]
+        # print("Observation space: ", observations_spaces)
+        # print("Action space: ",         actions_spaces)
+        trainers = get_trainers(env, 0, observations_spaces, actions_spaces, config, arglist)
+        print('Using good policy {} and adv policy {}'.format(config['maddpg']['good_policy'], config['maddpg']['adv_policy']))
 
-            # Initialize
-            U.initialize()
+        # Initialize
+        U.initialize()
 
-            # Load previous results, if necessary
-            if config['maddpg']['load_dir'] == "":
-                config['maddpg']['load_dir'] = config['maddpg']['save_dir']
-            if config['maddpg']['display'] or config['maddpg']['restore'] or config['maddpg']['benchmark']:
-                print('Loading previous state...')
-                print(config['maddpg']['load_dir'])
-                U.load_state(config['maddpg']['load_dir'])
+        # Load previous results, if necessary
+        if config['maddpg']['load_dir'] == "":
+            config['maddpg']['load_dir'] = config['maddpg']['save_dir']
+        if config['maddpg']['display'] or config['maddpg']['restore'] or config['maddpg']['benchmark']:
+            print('Loading previous state...')
+            print(config['maddpg']['load_dir'])
+            U.load_state(config['maddpg']['load_dir'])
 
-            episode_rewards = [0.0]  # sum of rewards for all agents
-            agent_rewards = [[0.0] for _ in range(n_agents)]  # individual agent reward
-            final_ep_rewards = []  # sum of rewards for training curve
-            final_ep_ag_rewards = []  # agent rewards for training curve
-            time_steps = []
-            validation_success = []
-            agent_info = [[[]]]  # placeholder for benchmarking info
-            saver = tf.train.Saver()
+        episode_rewards = [0.0]  # sum of rewards for all agents
+        agent_rewards = [[0.0] for _ in range(n_agents)]  # individual agent reward
+        final_ep_rewards = []  # sum of rewards for training curve
+        final_ep_ag_rewards = []  # agent rewards for training curve
+        time_steps = []
+        validation_success = []
+        agent_info = [[[]]]  # placeholder for benchmarking info
+        saver = tf.train.Saver()
 
-            cur_state_dict, xypos = env.reset()
-            cur_state = [np.array(state, dtype=np.float32) for state in cur_state_dict.values()]
-            episode_step = 0
-            train_step = 0
-            t_start = time.time()
-            t_total = time.time()
-            tot_steps = 0
-            malfunction = False
+        cur_state_dict, xypos = env.reset()
+        cur_state = [np.array(state, dtype=np.float32) for state in cur_state_dict.values()]
+        episode_step = 0
+        train_step = 0
+        t_start = time.time()
+        t_total = time.time()
+        tot_steps = 0
+        malfunction = False
 
-            print(str(config['domain']['name']))
-            print('Starting iterations...')
+        print(str(config['domain']['name']))
+        print('Starting iterations...')
 
-            while True:
-                # cur_state_full = torch.tensor(env.state(), dtype=torch.float32, device=TORCH_DEVICE)
-                # cur_state_full = np.array(env.state(), dtype=np.float32)
-                # get action
-                # print("N-agents: ", n_agents)
-                # print("cur_state: ", cur_state[0])
-                # print("cur_state_dict: ", cur_state_dict)
-                # print("cur_state_keys: ", cur_state_dict.keys())
-                # print("cur_position: ", xypos)
-                # print("cur_state_values: ", cur_state_dict.values())
-                # print(len(cur_state), len(cur_state_dict.values()))
-                # print(cur_state[0].shape, cur_state_full.shape, env.state().shape)
+        while True:
+            # cur_state_full = torch.tensor(env.state(), dtype=torch.float32, device=TORCH_DEVICE)
+            # cur_state_full = np.array(env.state(), dtype=np.float32)
+            # get action
+            # print("N-agents: ", n_agents)
+            # print("cur_state: ", cur_state[0])
+            # print("cur_state_dict: ", cur_state_dict)
+            # print("cur_state_keys: ", cur_state_dict.keys())
+            # print("cur_position: ", xypos)
+            # print("cur_state_values: ", cur_state_dict.values())
+            # print(len(cur_state), len(cur_state_dict.values()))
+            # print(cur_state[0].shape, cur_state_full.shape, env.state().shape)
 
-                actions = [agent.action(obs) for agent, obs in zip(trainers,cur_state)]
+            actions = [agent.action(obs) for agent, obs in zip(trainers,cur_state)]
 
-                if malfunction:
-                    actions[mal_agent] = np.zeros_like(actions[mal_agent])
+            if malfunction:
+                actions[mal_agent] = np.zeros_like(actions[mal_agent])
 
-                # environment step
-                actions_dict = {env.possible_agents[agent_id]: actions[agent_id] for agent_id in
-                                range(len(env.possible_agents))}
-                actions_dict_numpy = {env.possible_agents[agent_id]: actions[agent_id].tolist() for agent_id in
-                                      range(len(env.possible_agents))}
+            # environment step
+            actions_dict = {env.possible_agents[agent_id]: actions[agent_id] for agent_id in
+                            range(len(env.possible_agents))}
+            actions_dict_numpy = {env.possible_agents[agent_id]: actions[agent_id].tolist() for agent_id in
+                                  range(len(env.possible_agents))}
 
-                # step
-                # new_obs_n, rew_n, done_n, info_n = env.step(action_n)
-                new_state_dict, reward_dict, is_terminal_dict, is_truncated_dict, xypos = env.step(actions_dict_numpy)
-                next_state = [np.array(state, dtype=np.float32) for state in new_state_dict.values()]
+            # step
+            # new_obs_n, rew_n, done_n, info_n = env.step(action_n)
+            new_state_dict, reward_dict, is_terminal_dict, is_truncated_dict, xypos = env.step(actions_dict_numpy)
+            next_state = [np.array(state, dtype=np.float32) for state in new_state_dict.values()]
 
-                terminal = (episode_step >= arglist.max_episode_len)
+            terminal = (episode_step >= arglist.max_episode_len)
 
-                # store to ERB
-                # a = np.array(env.map_local_actions_to_global_action(actions_dict_numpy))
-                # print(actions_dict, a)
-                for i, agent in enumerate(trainers):
-                    agent.experience(cur_state[i], actions_dict[agent.name], reward_dict[agent.name],  next_state[i], is_terminal_dict[agent.name], terminal)
-                # model.erb.add_experience(old_state=cur_state_full,
-                #                          actions=torch.tensor(env.map_local_actions_to_global_action(actions_dict_numpy),
-                #                                               dtype=torch.float32, device=TORCH_DEVICE),
-                #                          reward=reward_dict[env.possible_agents[0]],
-                #                          new_state=torch.tensor(env.state(), dtype=torch.float32, device=TORCH_DEVICE),
-                #                          is_terminal=is_terminal_dict[env.possible_agents[0]])
+            # store to ERB
+            # a = np.array(env.map_local_actions_to_global_action(actions_dict_numpy))
+            # print(actions_dict, a)
+            for i, agent in enumerate(trainers):
+                agent.experience(cur_state[i], actions_dict[agent.name], reward_dict[agent.name],  next_state[i], is_terminal_dict[agent.name], terminal)
+            # model.erb.add_experience(old_state=cur_state_full,
+            #                          actions=torch.tensor(env.map_local_actions_to_global_action(actions_dict_numpy),
+            #                                               dtype=torch.float32, device=TORCH_DEVICE),
+            #                          reward=reward_dict[env.possible_agents[0]],
+            #                          new_state=torch.tensor(env.state(), dtype=torch.float32, device=TORCH_DEVICE),
+            #                          is_terminal=is_terminal_dict[env.possible_agents[0]])
 
-                # update cur_state
-                # obs_n = new_obs_n
-                # new_state = [torch.tensor(state, dtype=torch.float32, device=TORCH_DEVICE) for state in
-                #              new_state_dict.values()]
-                new_state = [np.array(state, dtype=np.float32) for state in new_state_dict.values()]
-                cur_state = new_state
+            # update cur_state
+            # obs_n = new_obs_n
+            # new_state = [torch.tensor(state, dtype=torch.float32, device=TORCH_DEVICE) for state in
+            #              new_state_dict.values()]
+            new_state = [np.array(state, dtype=np.float32) for state in new_state_dict.values()]
+            cur_state = new_state
 
-                done = all(is_terminal_dict.values()) or all(is_truncated_dict.values())
+            done = all(is_terminal_dict.values()) or all(is_truncated_dict.values())
 
-                # collect experience
-                for i, rew in enumerate(reward_dict.values()):
-                    episode_rewards[-1] += rew
-                    agent_rewards[i][-1] += rew
+            # collect experience
+            for i, rew in enumerate(reward_dict.values()):
+                episode_rewards[-1] += rew
+                agent_rewards[i][-1] += rew
 
-                # increment global step counter
-                train_step += 1
+            # increment global step counter
+            train_step += 1
 
-                if done or terminal:
-                    cur_state_dict = env.reset()[0]
-                    cur_state = [np.array(state, dtype=np.float32) for state in cur_state_dict.values()]
-                    episode_step = 0
-                    episode_rewards.append(0)
-                    for a in agent_rewards:
-                        a.append(0)
-                    agent_info.append([[]])
+            if done or terminal:
+                cur_state_dict = env.reset()[0]
+                cur_state = [np.array(state, dtype=np.float32) for state in cur_state_dict.values()]
+                episode_step = 0
+                episode_rewards.append(0)
+                for a in agent_rewards:
+                    a.append(0)
+                agent_info.append([[]])
 
-                # Malfunction
-                if len(episode_rewards) == config['domain']['malfunction_episode']:
-                    malfunction = True
-                    mal_agent = np.random.randint(0, len(env.possible_agents))
+            # Malfunction
+            if len(episode_rewards) == config['domain']['malfunction_episode']:
+                malfunction = True
+                mal_agent = np.random.randint(0, len(env.possible_agents))
 
-                # for benchmarking learned policies
-                # if arglist.benchmark:
-                #     for i, info in enumerate(info_n):
-                #         agent_info[-1][i].append(info_n['n'])
-                #     if train_step > arglist.benchmark_iters and (done or terminal):
-                #         file_name = arglist.benchmark_dir + arglist.exp_name + '.pkl'
-                #         print('Finished benchmarking, now saving...')
-                #         with open(file_name, 'wb') as fp:
-                #             pickle.dump(agent_info[:-1], fp)
-                #         break
-                #     continue
+            # for benchmarking learned policies
+            # if arglist.benchmark:
+            #     for i, info in enumerate(info_n):
+            #         agent_info[-1][i].append(info_n['n'])
+            #     if train_step > arglist.benchmark_iters and (done or terminal):
+            #         file_name = arglist.benchmark_dir + arglist.exp_name + '.pkl'
+            #         print('Finished benchmarking, now saving...')
+            #         with open(file_name, 'wb') as fp:
+            #             pickle.dump(agent_info[:-1], fp)
+            #         break
+            #     continue
 
-                # for displaying learned policies
-                if arglist.train and len(episode_rewards) % config['maddpg']['save_rate'] == 0 and config['maddpg']['display']:
-                    env = make_env(arglist, config, True)
-                    cur_state_dict = env.reset()[0]
-                    cur_state = [np.array(state, dtype=np.float32) for state in cur_state_dict.values()]
-                if arglist.train and len(episode_rewards) % config['maddpg']['save_rate'] + 50 == 0 and config['maddpg']['display']:
-                    env = make_env(arglist, config, False)
+            # for displaying learned policies
+            # if arglist.train and len(episode_rewards) % config['maddpg']['save_rate'] == 0 and config['maddpg']['display']:
+            #     env = make_env(arglist, config, True)
+            #     cur_state_dict = env.reset()[0]
+            #     cur_state = [np.array(state, dtype=np.float32) for state in cur_state_dict.values()]
+            # if arglist.train and len(episode_rewards) % config['maddpg']['save_rate'] + 50 == 0 and config['maddpg']['display']:
+            #     env = make_env(arglist, config, False)
+            #
+            # if config['maddpg']['display']:
+            #     time.sleep(0.1)
+            #     env.render()
+            #     continue
 
-                if config['maddpg']['display']:
-                    time.sleep(0.1)
-                    env.render()
-                    continue
-
-                # update all trainers, if not in display or benchmark mode
-                loss = None
-                for agent in trainers:
-                    agent.preupdate()
-                for agent in trainers:
-                    loss = agent.update(trainers, train_step)
+            # update all trainers, if not in display or benchmark mode
+            loss = None
+            for agent in trainers:
+                agent.preupdate()
+            for agent in trainers:
+                loss = agent.update(trainers, train_step)
 
 
-                # save model, display training output
-                if (done or terminal) and (len(episode_rewards) % config['maddpg']['save_rate'] == 0):
-                    full_directory_path = os.path.join(config['maddpg']['save_dir'] + 'malfunction', directory_name_with_time)
-                    # print(full_directory_path)
-                    if not os.path.exists(full_directory_path):
-                        os.makedirs(full_directory_path)  # Create the directory since it does not exist
-                    U.save_state(os.path.join(full_directory_path, directory_name_with_time), saver=saver)
-                    # print statement depends on whether or not there are adversaries
-                    # if num_adversaries == 0:
-                    #     print("steps: {}, episodes: {}, mean episode reward: {}, time: {}".format(
-                    #         train_step, len(episode_rewards), np.mean(episode_rewards[-arglist.save_rate:]), round(time.time()-t_start, 3)))
-                    # else:
-                    print("steps: {}, episodes: {}, mean episode reward: {}, agent episode reward: {}, time: {}".format(
-                        train_step, len(episode_rewards), np.mean(episode_rewards[-config['maddpg']['save_rate']:]),
-                        [np.mean(rew[-config['maddpg']['save_rate']:]) for rew in agent_rewards], round(time.time()-t_start, 3)))
-                    t_start = time.time()
-                    # Keep track of final episode reward
-                    final_ep_rewards.append(np.mean(episode_rewards[-config['maddpg']['save_rate']:]))
-                    for rew in agent_rewards:
-                        final_ep_ag_rewards.append(np.mean(rew[-config['maddpg']['save_rate']:]))
-                    time_steps.append(train_step)
+            # save model, display training output
+            if (done or terminal) and (len(episode_rewards) % config['maddpg']['save_rate'] == 0):
+                full_directory_path = os.path.join(config['maddpg']['save_dir'] + 'malfunction', directory_name_with_time)
+                # print(full_directory_path)
+                if not os.path.exists(full_directory_path):
+                    os.makedirs(full_directory_path)  # Create the directory since it does not exist
+                U.save_state(os.path.join(full_directory_path, directory_name_with_time), saver=saver)
+                # print statement depends on whether or not there are adversaries
+                # if num_adversaries == 0:
+                #     print("steps: {}, episodes: {}, mean episode reward: {}, time: {}".format(
+                #         train_step, len(episode_rewards), np.mean(episode_rewards[-arglist.save_rate:]), round(time.time()-t_start, 3)))
+                # else:
+                print("steps: {}, episodes: {}, mean episode reward: {}, agent episode reward: {}, time: {}".format(
+                    train_step, len(episode_rewards), np.mean(episode_rewards[-config['maddpg']['save_rate']:]),
+                    [np.mean(rew[-config['maddpg']['save_rate']:]) for rew in agent_rewards], round(time.time()-t_start, 3)))
+                t_start = time.time()
+                # Keep track of final episode reward
+                final_ep_rewards.append(np.mean(episode_rewards[-config['maddpg']['save_rate']:]))
+                for rew in agent_rewards:
+                    final_ep_ag_rewards.append(np.mean(rew[-config['maddpg']['save_rate']:]))
+                time_steps.append(train_step)
 
 
-                # saves final episode reward for plotting training curve later
-                # if config['domain']['total_timesteps'] < train_step:
+            # saves final episode reward for plotting training curve later
+            # if config['domain']['total_timesteps'] < train_step:
 
-                if len(episode_rewards) > config['domain']['num_episodes']:
-                    print('...Finished total of {} episodes. Time: {}'.format(len(episode_rewards), time.time() - t_total))
-                    # tf.reset_default_graph()
-                    break
-                cur_state = next_state
-        all_ep_runs.append(np.array(final_ep_rewards))
-        all_ag_runs.append(np.array(final_ep_ag_rewards))
-        all_time_steps.append(np.array(time_steps))
+            if len(episode_rewards) > config['domain']['num_episodes']:
+                full_directory_path = os.path.join(config['maddpg']['plots_dir'] + 'malfunction',
+                                                   directory_name_with_time)
+                # print(full_directory_path)
+                if not os.path.exists(full_directory_path):
+                    os.makedirs(full_directory_path)  # Create the directory since it does not exist
+                rew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_rewards.pkl')
+                with open(rew_file_name, 'wb') as fp:
+                    pickle.dump(final_ep_rewards, fp)
+                agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_agrewards.pkl')
+                with open(agrew_file_name, 'wb') as fp:
+                    pickle.dump(final_ep_ag_rewards, fp)
+                agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_timesteps.pkl')
+                with open(agrew_file_name, 'wb') as fp:
+                    pickle.dump(time_steps, fp)
+                # validation_success_file_name = os.path.join(full_directory_path,
+                #                                             config['maddpg']['exp_name'] + '_validation_success.pkl')
+                # with open(validation_success_file_name, 'wb') as fp:
+                #     pickle.dump(validation_success, fp)
+                print('...Finished total of {} episodes. Time: {}'.format(len(episode_rewards), time.time() - t_total))
+                # tf.reset_default_graph()
+                break
+            cur_state = next_state
 
-    full_directory_path = os.path.join(config['maddpg']['plots_dir'] + 'malfunction', directory_name_with_time)
-    # print(full_directory_path)
-    if not os.path.exists(full_directory_path):
-        os.makedirs(full_directory_path)  # Create the directory since it does not exist
-    rew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_rewards.pkl')
-    with open(rew_file_name, 'wb') as fp:
-        pickle.dump(all_ep_runs, fp)
-    agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_agrewards.pkl')
-    with open(agrew_file_name, 'wb') as fp:
-        pickle.dump(all_ag_runs, fp)
-    agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_timesteps.pkl')
-    with open(agrew_file_name, 'wb') as fp:
-        pickle.dump(all_time_steps, fp)
-    validation_success_file_name = os.path.join(full_directory_path,
-                                                config['maddpg']['exp_name'] + '_validation_success.pkl')
-    with open(validation_success_file_name, 'wb') as fp:
-        pickle.dump(validation_success, fp)
 
 if __name__ == '__main__':
     arglist, config = parse_args_n_config()

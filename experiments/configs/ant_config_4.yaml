@@ -23,7 +23,7 @@ domain:
   algo: TD3 # Valid values: 'DDPG', 'TD3', 'TD3-cc'
   init_learn_timestep: 25001 # at which timestep should the agent start learning
   #learning_starts_ep: 10 # Start Learning at episode X, before that fill the ERB with random actions
-  max_episode_len: 1000 # how many steps should the agent take per episode
+  max_episode_len: 100 # how many steps should the agent take per episode
   evaluation_frequency: 5000 # how ofter should the agent be evaluated
   runs: 5 # number of statistical runs
   seed: 64 # seeds the enviroment

@@ -4,8 +4,11 @@
 train_model () {
     config_path=$1
     script=$2
-    echo "Training run $i for configuration: $config_path"
-    /home/pearl0/miniconda3/envs/MMJC-maddpg/bin/python $script --config $config_path --train True
+    for i in {1..5}
+    do
+      echo "Training run $i for configuration: $config_path"
+      /home/pearl0/miniconda3/envs/MMJC-maddpg/bin/python $script --config $config_path --train True
+    done
 }
 
 # Training models with different configurations
