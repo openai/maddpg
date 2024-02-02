@@ -54,7 +54,7 @@ def find_most_recent_directory(base_path,directories, date_format):
     # Find the directory that corresponds to the most recent date
     most_recent_directory = directories[dates.index(most_recent_date)]
     # return most_recent_directory
-    return os.path.join(base_path, most_recent_directory, most_recent_directory)
+    return os.path.join(base_path, most_recent_directory, most_recent_directory), most_recent_directory
 
 
 def parse_args_n_config():
@@ -78,6 +78,7 @@ def parse_args_n_config():
     # Core training parameters
     parser.add_argument("--batch-size", type=int, default=100, help="number of episodes to optimize at the same time")
     parser.add_argument("--buffer_size", type=int, default=int(1e6), help="buffer size")
+    parser.add_argument("--malfunction", type=bool, default=False, help="malfunction")
 
     #Checkpointing
     # parser.add_argument("--save-rate", type=int, default=1000,
@@ -103,19 +104,26 @@ def parse_args_n_config():
     numunits = known_args.num_units if known_args.num_units else "128"
     gamma = known_args.gamma if known_args.gamma else "0.95"
 
-    base_directory_path = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}"
+
+    if known_args.malfunction:
+        base_directory_path = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}malfunction"
+    else:
+        base_directory_path = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}"
     if not os.path.exists(base_directory_path):
         os.makedirs(base_directory_path)
     directories = get_directories(base_directory_path)
     date_directories = filter_directories_by_date(directories, date_time_format)
-    most_recent_directory = find_most_recent_directory(base_directory_path, date_directories, date_time_format)
+    model_most_recent_directory, mrd = find_most_recent_directory(base_directory_path, date_directories, date_time_format)
 
-    if most_recent_directory is None:
+    if model_most_recent_directory is None:
         print("No previous directories found")
         most_recent_directory = ""
+    if known_args.malfunction:
+        plot_directory_path = f"./learning_curves/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/malfunction/" + mrd + "/"
+    else:
+        plot_directory_path = f"./learning_curves/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/" + mrd + "/"
 
-    plot_directory_path = f"./learning_curves/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/"
-    load_dir = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/"
+    # load_dir = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/"
 
     # print("Base directory path: ", base_directory_path)
     # print("Most recent directory: ", most_recent_directory)
@@ -140,9 +148,14 @@ def parse_args_n_config():
     #     args.load_dir = load_dir
 
     # if (config['maddpg']['restore'] or config['maddpg']['display'] or config['maddpg']['benchmark']) or config['maddpg']['load_dir'] == "":
-    config['maddpg']['load_dir'] = most_recent_directory
-    config['maddpg']['save_dir'] = base_directory_path
-    config['maddpg']['plots_dir'] = plot_directory_path
+    if args.malfunction:
+        config['maddpg']['plots_dir'] = plot_directory_path
+        config['maddpg']['load_dir'] = model_most_recent_directory
+        config['maddpg']['save_dir'] = base_directory_path
+    else:
+        config['maddpg']['load_dir'] = model_most_recent_directory
+        config['maddpg']['save_dir'] = base_directory_path
+        config['maddpg']['plots_dir'] = plot_directory_path
     return args, config # return both args and config
 
 def mlp_model_actor(input, num_outputs, scope, reuse=False, num_units=64, rnn_cell=None):
@@ -163,7 +176,7 @@ def mlp_model_critic(input, num_outputs, scope, reuse=False, num_units=64, rnn_c
         return out
 
 def make_env(arglist, config, show=False):
-    if show or config['maddpg']['display']:
+    if show:
         if config['domain']['name'] == 'Ant':
             env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],healthy_reward=0.1,
                                      max_episode_steps=config['domain']['max_episode_len'],
@@ -247,6 +260,7 @@ def test(arglist, config):
         t_total = time.time()
         tot_steps = 0
 
+        episode_count = 0
         print(str(config['domain']['name']))
         print('Starting iterations...')
 
@@ -308,24 +322,28 @@ def test(arglist, config):
             train_step += 1
 
             if done or terminal:
+                episode_count += 1
+                if (episode_count % config['domain']['display_rate'] < config['domain']['render_dur']):
+                    env = make_env(arglist, config, show=True)
+                    # time.sleep(0.1)
+                    # env.render()
+                else:
+                    env = make_env(arglist, config, show=False)
                 # for displaying learned policies
-                if (len(episode_rewards) % config['domain']['display_rate'] == 0):
-                    env = make_env(arglist, config, True)
-                    cur_state_dict = env.reset()[0]
-                    time.sleep(0.1)
-                    env.render()
-                    continue
-                    cur_state = [np.array(state, dtype=np.float32) for state in cur_state_dict.values()]
-                if (len(episode_rewards) % (config['domain']['display_rate'] + 50) == 0):
-                    env = make_env(arglist, config, False)
                 cur_state_dict = env.reset()[0]
                 cur_state = [np.array(state, dtype=np.float32) for state in cur_state_dict.values()]
                 episode_step = 0
                 episode_rewards.append(0)
                 all_trajectories.append(trajectory)
+                trajectory = []
                 for a in agent_rewards:
                     a.append(0)
                 agent_info.append([[]])
+
+                # Check if the current episode is within the rendering span
+
+
+
 
 
 
@@ -351,16 +369,16 @@ def test(arglist, config):
 
 
             # save model, display training output
-            if (done or terminal) and (len(episode_rewards) % config['maddpg']['save_rate'] == 0):
+            if (done or terminal) and (len(episode_rewards) % config['domain']['display_rate'] == 0):
 
                 print("steps: {}, episodes: {}, mean episode reward: {}, agent episode reward: {}, time: {}".format(
-                    train_step, len(episode_rewards), np.mean(episode_rewards[-config['maddpg']['save_rate']:]),
-                    [np.mean(rew[-config['maddpg']['save_rate']:]) for rew in agent_rewards], round(time.time()-t_start, 3)))
+                    train_step, len(episode_rewards), np.mean(episode_rewards[-config['domain']['display_rate']:]),
+                    [np.mean(rew[-config['domain']['display_rate']:]) for rew in agent_rewards], round(time.time()-t_start, 3)))
                 t_start = time.time()
                 # Keep track of final episode reward
-                final_ep_rewards.append(np.mean(episode_rewards[-config['maddpg']['save_rate']:]))
+                final_ep_rewards.append(np.mean(episode_rewards[-config['domain']['display_rate']:]))
                 for rew in agent_rewards:
-                    final_ep_ag_rewards.append(np.mean(rew[-config['maddpg']['save_rate']:]))
+                    final_ep_ag_rewards.append(np.mean(rew[-config['domain']['display_rate']:]))
                 time_steps.append(train_step)
 
 
@@ -381,7 +399,7 @@ def test(arglist, config):
     with open(rew_file_name, 'wb') as fp:
         pickle.dump(final_ep_rewards, fp)
     trajectories_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_test_trajectories.pkl')
-    with open(rew_file_name, 'wb') as fp:
+    with open(trajectories_file_name, 'wb') as fp:
         pickle.dump(all_trajectories, fp)
     # agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_agrewards.pkl')
     # with open(agrew_file_name, 'wb') as fp:
@@ -393,7 +411,7 @@ def test(arglist, config):
     #                                             config['maddpg']['exp_name'] + '_validation_success.pkl')
     # with open(validation_success_file_name, 'wb') as fp:
     #     pickle.dump(validation_success, fp)
-
+    env.close()
 if __name__ == '__main__':
     arglist, config = parse_args_n_config()
     test(arglist, config)
