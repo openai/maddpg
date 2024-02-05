@@ -167,16 +167,16 @@ def make_env(arglist, config, show=False):
         if config['domain']['name'] == 'Ant':
             env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],healthy_reward=0.1,
                                      max_episode_steps=config['domain']['max_episode_len'],
-                                           agent_obsk=config['domain']['obsk'], render_mode='human', terminate_when_unhealthy=False)
+                                            render_mode='human', terminate_when_unhealthy=False, ctrl_cost_weight=0)
         else:
             env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],
-                                           agent_obsk=config['domain']['obsk'], render_mode='human')
+                                            render_mode='human')
                                            # include_cfrc_ext_in_observation=False)
     else:
         if config['domain']['name'] == 'Ant':
             env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],healthy_reward=0.1,
                                      max_episode_steps=config['domain']['max_episode_len'],
-                                           agent_obsk=config['domain']['obsk'], terminate_when_unhealthy=False)
+                                           agent_obsk=config['domain']['obsk'], terminate_when_unhealthy=False, ctrl_cost_weight=0)
         else:
             env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],
                                            agent_obsk=config['domain']['obsk'])
@@ -304,6 +304,8 @@ def train(arglist, config):
             train_step += 1
 
             if done or terminal:
+                final_ep_rewards.append(episode_rewards[-1])
+                time_steps.append(train_step)
                 cur_state_dict = env.reset()[0]
                 cur_state = [np.array(state, dtype=np.float32) for state in cur_state_dict.values()]
                 episode_step = 0
@@ -365,9 +367,7 @@ def train(arglist, config):
                 t_start = time.time()
                 # Keep track of final episode reward
                 final_ep_rewards.append(np.mean(episode_rewards[-config['maddpg']['save_rate']:]))
-                for rew in agent_rewards:
-                    final_ep_ag_rewards.append(np.mean(rew[-config['maddpg']['save_rate']:]))
-                time_steps.append(train_step)
+
 
 
             # saves final episode reward for plotting training curve later
