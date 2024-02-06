@@ -27,6 +27,7 @@ domain:
   max_episode_len: 100 # how many steps should the agent take per episode
   runs: 5 # number of statistical runs
   seed: 64 # seeds the enviroment
-  test_episodes: 1000
-  display_rate: 100
+  test_episodes: 50
+  display_rate: 25
+  render_dur: 2
 
