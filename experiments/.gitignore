@@ -4,6 +4,7 @@
 # Ignore specific configuration files
 configs/
 plots/
+Analysis/
 #tmp/
 #learning_curves/
 
