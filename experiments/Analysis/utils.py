@@ -125,7 +125,8 @@ def plot_with_confidence_interval(mean_values, confidence_interval, timesteps, t
     plt.legend()
     plt.show()
 
-def plot_multiple_with_confidence_intervals(mean_values_list, confidence_intervals_list, timesteps, labels, title="Comparison Plot", xlabel="Timestep", ylabel="Value", save=False, save_path='/Users/Hunter/Development/Academic/UML/RL/Hasenfus-RL/Multi-Agent/maddpg/experiments/plots'):
+def plot_multiple_with_confidence_intervals(mean_values_list, confidence_intervals_list, timesteps, labels, title="Comparison Plot", xlabel="Timestep", ylabel="Value", save=False,
+                                            save_path='/Users/Hunter/Development/Academic/UML/RL/Hasenfus-RL/Multi-Agent/maddpg/experiments/plots', ylim=None):
     """
     Plot multiple sets of mean values with their confidence intervals.
 
@@ -149,12 +150,16 @@ def plot_multiple_with_confidence_intervals(mean_values_list, confidence_interva
     plt.title(title)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
+    if ylim:
+        plt.ylim(ylim)
+
     plt.legend()
     if save:
         plt.savefig(os.path.join(save_path, title+'.png'))
     plt.show()
 
-def plot_trajectories(trajectories, title="Agent Trajectories", xlabel="X Position", ylabel="Y Position", save=False, save_path='/Users/Hunter/Development/Academic/UML/RL/Hasenfus-RL/Multi-Agent/maddpg/experiments/plots'):
+def plot_trajectories(trajectories, title="Agent Trajectories", xlabel="X Position", ylabel="Y Position",
+                      save=False, save_path='/Users/Hunter/Development/Academic/UML/RL/Hasenfus-RL/Multi-Agent/maddpg/experiments/plots'):
     """
     Plot a series of x, y pairs as trajectories on an xy-plane.
 
