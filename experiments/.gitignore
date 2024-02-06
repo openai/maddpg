@@ -4,8 +4,8 @@
 # Ignore specific configuration files
 configs/
 plots/
-tmp/
-learning_curves/
+#tmp/
+#learning_curves/
 
 # Additionally, always ignore the .gitignore file itself
 .gitignore
