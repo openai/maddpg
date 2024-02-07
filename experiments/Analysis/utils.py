@@ -185,18 +185,17 @@ def get_trajectories(base_path, date_format='%Y%m%d-%H%M%S'):
     directories = get_directories(base_path)
     date_directories = filter_and_sort_directories_by_date(directories, date_format)
 
-    # Select the last n directories
-    recent_directory = date_directories[-1]
-
-    full_path = os.path.join(base_path, recent_directory)
+    # recent_directory = date_directories[-1]
+    #
+    # full_path = os.path.join(base_path, recent_directory)
     # print(full_path)
-    directories2 = get_directories(full_path)
+    directories2 = get_directories(base_path)
     # print(directories2)
     date_directories2 = filter_and_sort_directories_by_date(directories2, date_format)
     # print(date_directories2)
     recent_directory2 = date_directories2[-1]
 
-    full_path2 = os.path.join(full_path, recent_directory2)
+    full_path2 = os.path.join(base_path, recent_directory2)
 
     with open(os.path.join(full_path2, 'test_test_trajectories.pkl'), 'rb') as f:
         trajectories = pickle.load(f)
