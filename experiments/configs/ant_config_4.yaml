@@ -30,3 +30,4 @@ domain:
   test_episodes: 50
   display_rate: 25
   render_dur: 2
+  mal_agent: 0 # which agent should malfunction`
