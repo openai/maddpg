@@ -163,23 +163,13 @@ def mlp_model_critic(input, num_outputs, scope, reuse=False, num_units=64, rnn_c
         return out
 
 def make_env(arglist, config, show=False):
-    if show or config['maddpg']['display']:
-        if config['domain']['name'] == 'Ant':
-            env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],healthy_reward=0.1,
-                                     max_episode_steps=config['domain']['max_episode_len'],
-                                           agent_obsk=config['domain']['obsk'], render_mode='human', terminate_when_unhealthy=False , ctrl_cost_weight=0)
-        else:
-            env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],
-                                           agent_obsk=config['domain']['obsk'], render_mode='human')
-                                           # include_cfrc_ext_in_observation=False)
+    if config['domain']['name'] == 'Ant':
+        env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],healthy_reward=0.1,
+                                 max_episode_steps=config['domain']['max_episode_len'],
+                                       agent_obsk=config['domain']['obsk'], terminate_when_unhealthy=False, use_contact_forces = False)
     else:
-        if config['domain']['name'] == 'Ant':
-            env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],healthy_reward=0.1,
-                                     max_episode_steps=config['domain']['max_episode_len'],
-                                           agent_obsk=config['domain']['obsk'], terminate_when_unhealthy=False , ctrl_cost_weight=0)
-        else:
-            env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],
-                                           agent_obsk=config['domain']['obsk'])
+        env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],
+                                       agent_obsk=config['domain']['obsk'])
     return env
 
 def get_trainers(env, num_adversaries, obs_shape_n, action_shape_n, config, arglist):
