@@ -166,10 +166,10 @@ def make_env(arglist, config, show=False):
     if config['domain']['name'] == 'Ant':
         env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],healthy_reward=0.1,
                                  max_episode_steps=config['domain']['max_episode_len'],
-                                        render_mode='human', terminate_when_unhealthy=False,use_contact_forces = False)
+                                        render_mode='rgb_array', terminate_when_unhealthy=False,use_contact_forces = False)
     else:
         env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],
-                                        render_mode='human')
+                                        render_mode='rgb_array')
     return env
 
 def get_trainers(env, num_adversaries, obs_shape_n, action_shape_n, config, arglist):
