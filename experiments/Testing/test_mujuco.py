@@ -79,7 +79,7 @@ def parse_args_n_config():
     parser.add_argument("--batch-size", type=int, default=100, help="number of episodes to optimize at the same time")
     parser.add_argument("--buffer_size", type=int, default=int(1e6), help="buffer size")
     parser.add_argument("--malfunction", type=bool, default=False, help="malfunction")
-
+    parser.add_argument("--reward_func", type=str, default="default", help="reward function")
     #Checkpointing
     # parser.add_argument("--save-rate", type=int, default=1000,
     #                     help="save model once every time this many episodes are completed")
@@ -103,12 +103,12 @@ def parse_args_n_config():
     lr = known_args.lr if known_args.lr else "1e-2"
     numunits = known_args.num_units if known_args.num_units else "128"
     gamma = known_args.gamma if known_args.gamma else "0.95"
-
+    reward_func = known_args.reward_func if known_args.reward_func else "default"
 
     if known_args.malfunction:
-        base_directory_path = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}malfunction"
+        base_directory_path = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}malfunction/{reward_func}"
     else:
-        base_directory_path = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}"
+        base_directory_path = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/{reward_func}"
     if not os.path.exists(base_directory_path):
         os.makedirs(base_directory_path)
     directories = get_directories(base_directory_path)
@@ -119,9 +119,9 @@ def parse_args_n_config():
         print("No previous directories found")
         most_recent_directory = ""
     if known_args.malfunction:
-        plot_directory_path = f"./learning_curves/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/malfunction/" + mrd + "/"
+        plot_directory_path = f"./learning_curves/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/malfunction/{reward_func}/" + mrd + "/"
     else:
-        plot_directory_path = f"./learning_curves/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/" + mrd + "/"
+        plot_directory_path = f"./learning_curves/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/{reward_func}/" + mrd + "/"
 
     # load_dir = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/"
 
@@ -215,6 +215,9 @@ def test(arglist, config):
     all_ep_runs = []
     all_time_steps = []
     all_trajectories = []
+    all_tot_dist = []
+    all_last_x = []
+    all_last_xy = []
     with U.single_threaded_session():
         # Create environment
         env = make_env(arglist, config, show=False)
@@ -335,6 +338,9 @@ def test(arglist, config):
                 episode_step = 0
                 episode_rewards.append(0)
                 all_trajectories.append(trajectory)
+                all_last_x.append(info_dict['agent_0']['x_position'])
+                all_last_xy.append((info_dict['agent_0']['x_position'], info_dict['agent_0']['y_position']))
+                all_tot_dist.append(info_dict['agent_0']['distance_from_origin'])
                 trajectory = []
                 for a in agent_rewards:
                     a.append(0)

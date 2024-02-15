@@ -197,7 +197,9 @@ def get_trajectories(base_path, date_format='%Y%m%d-%H%M%S'):
 
     full_path2 = os.path.join(base_path, recent_directory2)
 
-    with open(os.path.join(full_path2, 'test_test_trajectories.pkl'), 'rb') as f:
-        trajectories = pickle.load(f)
+    with open(os.path.join(full_path2, 'test_healthy_trajectories.pkl'), 'rb') as f:
+        healthy_trajectories = pickle.load(f)
+    with open(os.path.join(full_path2, 'test_mal_trajectories.pkl'), 'rb') as f:
+        mal_trajectories = pickle.load(f)
 
-    return trajectories
+    return healthy_trajectories, mal_trajectories

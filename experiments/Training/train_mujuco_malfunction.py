@@ -78,7 +78,7 @@ def parse_args_n_config():
     # Core training parameters
     parser.add_argument("--batch-size", type=int, default=100, help="number of episodes to optimize at the same time")
     parser.add_argument("--buffer_size", type=int, default=int(1e6), help="buffer size")
-
+    parser.add_argument("--mal_agent", type=int, default=0, help="malfunctioning agent")
     #Checkpointing
     # parser.add_argument("--save-rate", type=int, default=1000,
     #                     help="save model once every time this many episodes are completed")
@@ -311,7 +311,7 @@ def train(arglist, config):
             # Malfunction
             if len(episode_rewards) == config['domain']['malfunction_episode']:
                 malfunction = True
-                mal_agent = np.random.randint(0, len(env.possible_agents))
+                mal_agent = arglist.mal_agent
 
             # for benchmarking learned policies
             # if arglist.benchmark:
@@ -378,13 +378,13 @@ def train(arglist, config):
                 # print(full_directory_path)
                 if not os.path.exists(full_directory_path):
                     os.makedirs(full_directory_path)  # Create the directory since it does not exist
-                rew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_rewards.pkl')
+                rew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_' + arglist.mal_agent + 'rewards.pkl')
                 with open(rew_file_name, 'wb') as fp:
                     pickle.dump(final_ep_rewards, fp)
-                agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_agrewards.pkl')
+                agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_' + arglist.mal_agent + '_agrewards.pkl')
                 with open(agrew_file_name, 'wb') as fp:
                     pickle.dump(final_ep_ag_rewards, fp)
-                agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_timesteps.pkl')
+                agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_' + arglist.mal_agent + '_timesteps.pkl')
                 with open(agrew_file_name, 'wb') as fp:
                     pickle.dump(time_steps, fp)
                 # validation_success_file_name = os.path.join(full_directory_path,
