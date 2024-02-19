@@ -78,7 +78,7 @@ def parse_args_n_config():
     # Core training parameters
     parser.add_argument("--batch-size", type=int, default=100, help="number of episodes to optimize at the same time")
     parser.add_argument("--buffer_size", type=int, default=int(1e6), help="buffer size")
-
+    parser.add_argument("--mal_agent", type=int, default=0, help="mal agent")
     #Checkpointing
     # parser.add_argument("--save-rate", type=int, default=1000,
     #                     help="save model once every time this many episodes are completed")

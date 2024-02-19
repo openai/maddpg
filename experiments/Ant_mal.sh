@@ -12,19 +12,21 @@ commit_changes () {
 train_model () {
     config_path=$1
     script=$2
-    data =$3
-    model =$4
-    for i in {1..3}
+    data=$3
+    model=$4
+    agent=$5
+    for i in {1..5}
     do
       echo "Training run $i for configuration: $config_path"
-      /home/pearl0/miniconda3/envs/MMJC-maddpg/bin/python $script --config $config_path --train True
+      /home/pearl0/miniconda3/envs/MMJC-maddpg/bin/python $script --config $config_path --train True --mal_agent $agent
     done
     commit_changes $data $model
     git push origin UNITYxMaMuJuCo
 }
 
 # Training models with different configurations
-train_model ./configs/ant_config_4.yaml ./Training/train_mujuco.py ./learning_curves/Ant.2x4.0.001.350.0.99/ ./tmp/policy/Ant.2x4.0.001.350.0.99/
+#train_model ./configs/ant_config_4.yaml ./Training/train_mujuco.py ./learning_curves/Ant.2x4.0.001.350.0.99/ ./tmp/policy/Ant.2x4.0.001.350.0.99/ 0
 # Train malfunction
-train_model ./configs/ant_config_4.yaml ./Training/train_mujuco_malfunction.py ./learning_curves/Ant.2x4.0.001.350.0.99/malfunction/ ./tmp/policy/Ant.2x4.0.001.350.0.99malfunction/
+train_model ./configs/ant_config_4.yaml ./Training/train_mujuco_malfunction.py ./learning_curves/Ant.2x4.0.001.350.0.99/malfunction/ ./tmp/policy/Ant.2x4.0.001.350.0.99malfunction/ 0
+train_model ./configs/ant_config_4.yaml ./Training/train_mujuco_malfunction.py ./learning_curves/Ant.2x4.0.001.350.0.99/malfunction/ ./tmp/policy/Ant.2x4.0.001.350.0.99malfunction/ 2
 
