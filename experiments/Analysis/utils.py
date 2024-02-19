@@ -203,3 +203,47 @@ def get_trajectories(base_path, date_format='%Y%m%d-%H%M%S'):
         mal_trajectories = pickle.load(f)
 
     return healthy_trajectories, mal_trajectories
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def plot_distance_distribution(distances, interval_width, save=False, save_path='/Users/Hunter/Development/Academic/UML/RL/Hasenfus-RL/Multi-Agent/maddpg/experiments/plots'):
+    """
+    Plot the distribution of distances as a bar graph with specified interval widths.
+
+    :param distances: A NumPy array of distances.
+    :param interval_width: The width of each interval (e.g., 5 for 15-20, 20-25, etc.).
+    """
+    # Determine the range of distances
+    min_distance = np.min(distances)
+    max_distance = np.max(distances)
+
+    # Create intervals
+    bins = np.arange(min_distance, max_distance + interval_width, interval_width)
+
+    # Calculate the histogram
+    counts, _ = np.histogram(distances, bins=bins)
+
+    # Calculate percentages
+    percentages = (counts / counts.sum()) * 100
+
+    # Define labels for the x-axis
+    labels = [f'{int(bins[i])}-{int(bins[i + 1])}' for i in range(len(bins) - 1)]
+
+    # Plotting
+    plt.figure(figsize=(10, 6))
+    plt.bar(labels, percentages, width=0.8, color='skyblue', edgecolor='black')
+
+    plt.title('Distribution of Distances')
+    plt.xlabel('Distance Intervals')
+    plt.ylabel('Percentage of Runs (%)')
+
+    plt.xticks(rotation=45)  # Rotate labels to improve readability
+    plt.grid(axis='y', linestyle='--')
+
+    plt.show()
+    if save:
+        plt.savefig(os.path.join(save_path, 'distance_distribution.png'))
+

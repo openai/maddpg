@@ -215,6 +215,8 @@ def test(arglist, config):
     all_ep_runs = []
     all_time_steps = []
     all_trajectories = []
+    all_tot_dist = []
+
 
 
     with U.single_threaded_session():
@@ -342,6 +344,8 @@ def test(arglist, config):
                 episode_step = 0
                 episode_rewards.append(0)
                 all_trajectories.append(trajectory)
+                all_tot_dist.append(info_dict['agent_0']['distance_from_origin'])
+
                 trajectory = []
                 for a in agent_rewards:
                     a.append(0)
@@ -408,6 +412,10 @@ def test(arglist, config):
     trajectories_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_mal_trajectories.pkl')
     with open(trajectories_file_name, 'wb') as fp:
         pickle.dump(all_trajectories, fp)
+    distances_file_name = os.path.join(full_directory_path,
+                                       config['maddpg']['exp_name'] + '_healthy_distances.pkl')
+    with open(distances_file_name, 'wb') as fp:
+        pickle.dump(all_tot_dist, fp)
     # agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_agrewards.pkl')
     # with open(agrew_file_name, 'wb') as fp:
     #     pickle.dump(all_ag_runs, fp)
