@@ -180,7 +180,7 @@ def plot_trajectories(trajectories, title="Agent Trajectories", xlabel="X Positi
         plt.savefig(os.path.join(save_path, title+'.png'))
     plt.show()
 
-def get_trajectories(base_path, date_format='%Y%m%d-%H%M%S'):
+def get_trajectories_and_distances(base_path, healthy = True, mal = False, distances = True, date_format='%Y%m%d-%H%M%S'):
     """Get the rewards for the last n runs."""
     directories = get_directories(base_path)
     date_directories = filter_and_sort_directories_by_date(directories, date_format)
@@ -197,19 +197,30 @@ def get_trajectories(base_path, date_format='%Y%m%d-%H%M%S'):
 
     full_path2 = os.path.join(base_path, recent_directory2)
 
-    with open(os.path.join(full_path2, 'test_healthy_trajectories.pkl'), 'rb') as f:
-        healthy_trajectories = pickle.load(f)
-    with open(os.path.join(full_path2, 'test_mal_trajectories.pkl'), 'rb') as f:
-        mal_trajectories = pickle.load(f)
+    returnable = []
+    if healthy:
+        with open(os.path.join(full_path2, 'test_healthy_trajectories.pkl'), 'rb') as f:
+            healthy_trajectories = pickle.load(f)
+            returnable.append(healthy_trajectories)
+    else:
+        returnable.append(None)
+    if mal:
+        with open(os.path.join(full_path2, 'test_mal_trajectories.pkl'), 'rb') as f:
+            mal_trajectories = pickle.load(f)
+            returnable.append(mal_trajectories)
+    else:
+        returnable.append(None)
+    if distances:
+        with open(os.path.join(full_path2, 'test_healthy_distances.pkl'), 'rb') as f:
+            distances = pickle.load(f)
+            returnable.append(distances)
+    else:
+        returnable.append(None)
 
-    return healthy_trajectories, mal_trajectories
+    return returnable
 
 
-import numpy as np
-import matplotlib.pyplot as plt
-
-
-def plot_distance_distribution(distances, interval_width, save=False, save_path='/Users/Hunter/Development/Academic/UML/RL/Hasenfus-RL/Multi-Agent/maddpg/experiments/plots'):
+def plot_distance_distribution(distances, interval_width, save=False,title='alg1', save_path='/Users/Hunter/Development/Academic/UML/RL/Hasenfus-RL/Multi-Agent/maddpg/experiments/plots'):
     """
     Plot the distribution of distances as a bar graph with specified interval widths.
 
