@@ -378,13 +378,13 @@ def train(arglist, config):
                 # print(full_directory_path)
                 if not os.path.exists(full_directory_path):
                     os.makedirs(full_directory_path)  # Create the directory since it does not exist
-                rew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_' + arglist.mal_agent + 'rewards.pkl')
+                rew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_' + str(arglist.mal_agent) + 'rewards.pkl')
                 with open(rew_file_name, 'wb') as fp:
                     pickle.dump(final_ep_rewards, fp)
-                agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_' + arglist.mal_agent + '_agrewards.pkl')
+                agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_' + str(arglist.mal_agent) + '_agrewards.pkl')
                 with open(agrew_file_name, 'wb') as fp:
                     pickle.dump(final_ep_ag_rewards, fp)
-                agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_' + arglist.mal_agent + '_timesteps.pkl')
+                agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_' + str(arglist.mal_agent) + '_timesteps.pkl')
                 with open(agrew_file_name, 'wb') as fp:
                     pickle.dump(time_steps, fp)
                 # validation_success_file_name = os.path.join(full_directory_path,

@@ -164,7 +164,16 @@ def mlp_model_critic(input, num_outputs, scope, reuse=False, num_units=64, rnn_c
 
 def make_env(arglist, config, show=False):
     if config['domain']['name'] == 'Ant':
-        env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],healthy_reward=0.1,
+        if config['domain']['factorization'] == '8x1':
+            from gymnasium_robotics.mamujoco_v0 import get_parts_and_edges
+            env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'],
+                                                              agent_conf=config['domain']['factorization'],
+                                                              healthy_reward=0.1,
+                                                              max_episode_steps=config['domain']['max_episode_len'],
+                                                              render_mode='rgb_array', terminate_when_unhealthy=False,
+                                                              use_contact_forces=False)
+        else:
+            env = gymnasium_robotics.mamujoco_v0.parallel_env(scenario=config['domain']['name'], agent_conf=config['domain']['factorization'],healthy_reward=0.1,
                                  max_episode_steps=config['domain']['max_episode_len'],
                                         render_mode='rgb_array', terminate_when_unhealthy=False,use_contact_forces = False)
     else:
