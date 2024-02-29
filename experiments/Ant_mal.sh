@@ -16,7 +16,7 @@ train_model () {
     model=$4
     agent=$5
     iters=$6
-    for i in {1..$iters}
+    for i in $(seq 1 $iters)
     do
       echo "Training run $i for configuration: $config_path"
       /home/pearl0/miniconda3/envs/MMJC-maddpg/bin/python $script --config $config_path --train True --mal_agent $agent
@@ -28,6 +28,6 @@ train_model () {
 # Training models with different configurations
 #train_model ./configs/ant_config_4.yaml ./Training/train_mujuco.py ./learning_curves/Ant.2x4.0.001.350.0.99/ ./tmp/policy/Ant.2x4.0.001.350.0.99/ 0
 # Train malfunction
-train_model ./configs/ant_config_4.yaml ./Training/train_mujuco_malfunction.py ./learning_curves/Ant.2x4.0.001.350.0.99/malfunction/ ./tmp/policy/Ant.2x4.0.001.350.0.99malfunction/ 0 3
-train_model ./configs/ant_config_4.yaml ./Training/train_mujuco_malfunction.py ./learning_curves/Ant.2x4.0.001.350.0.99/malfunction/ ./tmp/policy/Ant.2x4.0.001.350.0.99malfunction/ 2 5
+train_model ./configs/ant_config_4.yaml ./Training/train_mujuco_malfunction.py ./learning_curves/Ant.2x4.0.001.350.0.99/malfunction/ ./tmp/policy/Ant.2x4.0.001.350.0.99malfunction/ 0 1
+train_model ./configs/ant_config_4.yaml ./Training/train_mujuco_malfunction.py ./learning_curves/Ant.2x4.0.001.350.0.99/malfunction/ ./tmp/policy/Ant.2x4.0.001.350.0.99malfunction/ 2 4
 

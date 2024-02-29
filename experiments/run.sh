@@ -3,7 +3,7 @@
 
 # Function to train a model with a given configuration
 bash ./Ant_mal.sh
-bash ./Cheetah.sh
+#bash ./Cheetah.sh
 
 # Training models with different configurations
 #train_model ./configs/ant_config_2.yaml ./train_mujuco.py ./learning_curves/Ant.4x2.0.001.350.0.99/ ./tmp/policy/Ant.4x2.0.001.350.0.99/
