@@ -9,7 +9,7 @@ maddpg:
   exp_name : "test"
   benchmark_files: "./benchmark_files/"
   plots_dir: "./learning_curves/"
-  load_dir: "./temp"
+  load_dir: "/Users/Hunter/Development/Academic/UML/RL/Hasenfus-RL/Multi-Agent/maddpg/experiments/tmp/policy/Ant.4x2.0.001.350.0.99malfunction/R2/20240210-074547"
   save_dir: "./tmp/policy/"
 domain:
   name: Ant
