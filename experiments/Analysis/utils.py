@@ -23,7 +23,7 @@ def filter_and_sort_directories_by_date(directories, date_format):
     filtered_and_sorted_directories.sort(key=lambda x: x[1])
     return [directory for directory, date in filtered_and_sorted_directories]
 
-def get_rewards_for_last_n_runs(base_path, n, date_format='%Y%m%d-%H%M%S', aggrew=True, valid=True, time=False):
+def get_rewards_for_last_n_runs(base_path, n, date_format='%Y%m%d-%H%M%S', aggrew=True, valid=True, time=False, malfunction_agent = None):
     """Get the rewards for the last n runs."""
     directories = get_directories(base_path)
     date_directories = filter_and_sort_directories_by_date(directories, date_format)
@@ -35,31 +35,42 @@ def get_rewards_for_last_n_runs(base_path, n, date_format='%Y%m%d-%H%M%S', aggre
     for directory in recent_n_directories:
         full_path = os.path.join(base_path, directory)
         rewards_data = []
+        if malfunction_agent is not None:
+            with open(os.path.join(full_path, f'test_{malfunction_agent}rewards.pkl'), 'rb') as f:
+                rewards = pickle.load(f)
+                rewards_data.append(rewards)
 
-        with open(os.path.join(full_path, 'test_rewards.pkl'), 'rb') as f:
-            rewards = pickle.load(f)
-            rewards_data.append(rewards)
+            if aggrew:
+                with open(os.path.join(full_path, f'test_{malfunction_agent}_agrewards.pkl'), 'rb') as f:
+                    agrewards = pickle.load(f)
+                    rewards_data.append(agrewards)
+            else:
+                rewards_data.append(None)
 
-        if aggrew:
-            with open(os.path.join(full_path, 'test_agrewards.pkl'), 'rb') as f:
-                agrewards = pickle.load(f)
-                rewards_data.append(agrewards)
+            if time:
+                with open(os.path.join(full_path, f'test_{malfunction_agent}_timesteps.pkl'), 'rb') as f:
+                    time = pickle.load(f)
+                    rewards_data.append(time)
+            else:
+                rewards_data.append(None)
         else:
-            rewards_data.append(None)
+            with open(os.path.join(full_path, 'test_rewards.pkl'), 'rb') as f:
+                rewards = pickle.load(f)
+                rewards_data.append(rewards)
 
-        # if valid:
-        #     with open(os.path.join(full_path, 'test_validation_success.pkl'), 'rb') as f:
-        #         valid = pickle.load(f)
-        #         rewards_data.append(valid)
-        # else:
-        #     rewards_data.append(None)
+            if aggrew:
+                with open(os.path.join(full_path, 'test_agrewards.pkl'), 'rb') as f:
+                    agrewards = pickle.load(f)
+                    rewards_data.append(agrewards)
+            else:
+                rewards_data.append(None)
 
-        if time:
-            with open(os.path.join(full_path, 'test_timesteps.pkl'), 'rb') as f:
-                time = pickle.load(f)
-                rewards_data.append(time)
-        else:
-            rewards_data.append(None)
+            if time:
+                with open(os.path.join(full_path, 'test_timesteps.pkl'), 'rb') as f:
+                    time = pickle.load(f)
+                    rewards_data.append(time)
+            else:
+                rewards_data.append(None)
 
         all_rewards.append(tuple(rewards_data))
 
@@ -99,8 +110,8 @@ def average_and_confidence(run_info):
 
 
 
-def plot_with_confidence_interval(mean_values, confidence_interval, timesteps, title="Plot with Confidence Interval",
-                                  xlabel="Timestep", ylabel="Value"):
+def plot_with_confidence_interval(mean_values, confidence_interval, timesteps, title="Plot with Confidence Interval", xlabel="Timestep", ylabel="Value",
+                                  ylim = None, save=False, save_path='/Users/Hunter/Development/Academic/UML/RL/Hasenfus-RL/Multi-Agent/maddpg/experiments/plots'):
     """
     Plot mean values with confidence interval using matplotlib.
 
@@ -122,7 +133,12 @@ def plot_with_confidence_interval(mean_values, confidence_interval, timesteps, t
     plt.title(title)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
+    if ylim:
+        plt.ylim(ylim)
+
     plt.legend()
+    if save:
+        plt.savefig(os.path.join(save_path, title + '.png'))
     plt.show()
 
 def plot_multiple_with_confidence_intervals(mean_values_list, confidence_intervals_list, timesteps, labels, title="Comparison Plot", xlabel="Timestep", ylabel="Value", save=False,
