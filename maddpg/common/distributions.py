@@ -1,8 +1,13 @@
 import tensorflow as tf
+tf_version = tf.__version__
+if tf_version.startswith('2.'):
+    import tensorflow.compat.v1 as tf
+    tf.disable_v2_behavior()
+
 import numpy as np
 import maddpg.common.tf_util as U
 from tensorflow.python.ops import math_ops
-from multiagent.multi_discrete import MultiDiscrete
+# from multiagent.multi_discrete import MultiDiscrete
 from tensorflow.python.ops import nn
 
 class Pd(object):
@@ -308,16 +313,22 @@ class BernoulliPd(Pd):
         return cls(flat)
 
 def make_pdtype(ac_space):
-    from gym import spaces
+    tf_version = tf.__version__
+    if tf_version.startswith('1.'):
+        from gym import spaces
+    else:
+        from gymnasium import spaces
+
+    # print(type(ac_space), ac_space, type(ac_space) == spaces.Box, spaces.Box)
     if isinstance(ac_space, spaces.Box):
         assert len(ac_space.shape) == 1
         return DiagGaussianPdType(ac_space.shape[0])
     elif isinstance(ac_space, spaces.Discrete):
         # return CategoricalPdType(ac_space.n)
         return SoftCategoricalPdType(ac_space.n)
-    elif isinstance(ac_space, MultiDiscrete):
+    # elif isinstance(ac_space, MultiDiscrete):
         #return MultiCategoricalPdType(ac_space.low, ac_space.high)
-        return SoftMultiCategoricalPdType(ac_space.low, ac_space.high)
+        # return SoftMultiCategoricalPdType(ac_space.low, ac_space.high)
     elif isinstance(ac_space, spaces.MultiBinary):
         return BernoulliPdType(ac_space.n)
     else:

@@ -2,6 +2,10 @@ import collections
 import numpy as np
 import os
 import tensorflow as tf
+tf_version = tf.__version__
+if tf_version.startswith('2.'):
+    import tensorflow.compat.v1 as tf
+    tf.disable_v2_behavior()
 
 def sum(x, axis=None, keepdims=False):
     return tf.reduce_sum(x, axis=None if axis is None else [axis], keep_dims = keepdims)
@@ -298,9 +302,13 @@ class _Function(object):
         self.check_nan = check_nan
 
     def _feed_input(self, feed_dict, inpt, value):
+        # print("here")
+        # print(type(inpt), type(value), TfInput)
         if issubclass(type(inpt), TfInput):
             feed_dict.update(inpt.make_feed_dict(value))
         elif is_placeholder(inpt):
+            feed_dict[inpt] = value
+        else:
             feed_dict[inpt] = value
 
     def __call__(self, *args, **kwargs):
@@ -325,6 +333,8 @@ class _Function(object):
         # Update feed dict with givens.
         for inpt in self.givens:
             feed_dict[inpt] = feed_dict.get(inpt, self.givens[inpt])
+        # print(feed_dict)
+        # print(self.inputs)
         results = get_session().run(self.outputs_update, feed_dict=feed_dict)[:-1]
         if self.check_nan:
             if any(np.isnan(r).any() for r in results):
