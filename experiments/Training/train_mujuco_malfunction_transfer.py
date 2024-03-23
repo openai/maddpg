@@ -106,19 +106,22 @@ def parse_args_n_config():
     numunits = known_args.num_units if known_args.num_units else "128"
     gamma = known_args.gamma if known_args.gamma else "0.95"
 
-    base_directory_path = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}"
+    base_directory_path = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}malfunction/R2/agent_{known_args.mal_agent_prev}"
     if not os.path.exists(base_directory_path):
         os.makedirs(base_directory_path)
+
     directories = get_directories(base_directory_path)
+
     date_directories = filter_directories_by_date(directories, date_time_format)
+
     most_recent_directory = find_most_recent_directory(base_directory_path, date_directories, date_time_format)
 
     if most_recent_directory is None:
         print("No previous directories found")
         most_recent_directory = ""
 
-    plot_directory_path = f"./learning_curves/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/"
-    load_dir = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/"
+    plot_directory_path = f"./learning_curves/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/malfunction/agent_{known_args.mal_agent_prev}"
+    load_dir = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}malfunction/R2/agent_{known_args.mal_agent_prev}"
 
     # print("Base directory path: ", base_directory_path)
     # print("Most recent directory: ", most_recent_directory)
@@ -143,9 +146,9 @@ def parse_args_n_config():
     #     args.load_dir = load_dir
 
     # if (config['maddpg']['restore'] or config['maddpg']['display'] or config['maddpg']['benchmark']) or config['maddpg']['load_dir'] == "":
-    #     config['maddpg']['load_dir'] = most_recent_directory
-    config['maddpg']['save_dir'] = base_directory_path
-    config['maddpg']['plots_dir'] = plot_directory_path
+    config['maddpg']['load_dir'] = most_recent_directory
+    config['maddpg']['save_dir'] = base_directory_path + "/" + f"agent_{known_args.mal_agent_new}"
+    config['maddpg']['plots_dir'] = plot_directory_path + "/" + f"agent_{known_args.mal_agent_new}"
     return args, config # return both args and config
 
 def mlp_model_actor(input, num_outputs, scope, reuse=False, num_units=64, rnn_cell=None):
@@ -212,12 +215,9 @@ def train(arglist, config):
         U.initialize()
 
         # Load previous results, if necessary
-        if config['maddpg']['load_dir'] == "":
-            config['maddpg']['load_dir'] = config['maddpg']['save_dir']
-        if config['maddpg']['display'] or config['maddpg']['restore'] or config['maddpg']['benchmark']:
-            print('Loading previous state...')
-            print(config['maddpg']['load_dir'])
-            U.load_state(config['maddpg']['load_dir'])
+        print(f'Loading model {arglist.mal_agent_prev} state... for {arglist.mal_agent_new}')
+        print(config['maddpg']['load_dir'])
+        U.load_state(config['maddpg']['load_dir'])
 
         episode_rewards = [0.0]  # sum of rewards for all agents
         agent_rewards = [[0.0] for _ in range(n_agents)]  # individual agent reward
@@ -235,7 +235,8 @@ def train(arglist, config):
         t_start = time.time()
         t_total = time.time()
         tot_steps = 0
-        malfunction = False
+        mal_agent_prev = arglist.mal_agent_prev
+        mal_agent_new = arglist.mal_agent_new
 
         print(str(config['domain']['name']))
         print('Starting iterations...')
@@ -253,10 +254,15 @@ def train(arglist, config):
             # print(len(cur_state), len(cur_state_dict.values()))
             # print(cur_state[0].shape, cur_state_full.shape, env.state().shape)
 
-            actions = [agent.action(obs) for agent, obs in zip(trainers,cur_state)]
+            actions = []
 
-            if malfunction:
-                actions[mal_agent] = np.zeros_like(actions[mal_agent])
+            for agent, obs in zip(trainers, cur_state):
+                if agent.agent_index == mal_agent_prev:
+                    actions.append(agent.action(cur_state[mal_agent_new]))
+                else:
+                    actions.append(agent.action(obs))
+
+            actions[mal_agent_new] = np.zeros_like(actions[0])
 
             # environment step
             actions_dict = {env.possible_agents[agent_id]: actions[agent_id] for agent_id in
@@ -312,9 +318,6 @@ def train(arglist, config):
                 agent_info.append([[]])
 
             # Malfunction
-            if len(episode_rewards) == config['domain']['malfunction_episode']:
-                malfunction = True
-                mal_agent = arglist.mal_agent_new
 
             # for benchmarking learned policies
             # if arglist.benchmark:
@@ -351,7 +354,7 @@ def train(arglist, config):
 
             # save model, display training output
             if (done or terminal) and (len(episode_rewards) % config['maddpg']['save_rate'] == 0):
-                full_directory_path = os.path.join(config['maddpg']['save_dir'] + 'malfunction' + str(arglist.mal_agent), directory_name_with_time)
+                full_directory_path = os.path.join(config['maddpg']['save_dir'] + 'malfunction' + str(arglist.mal_agent_new), directory_name_with_time)
                 # print(full_directory_path)
                 if not os.path.exists(full_directory_path):
                     os.makedirs(full_directory_path)  # Create the directory since it does not exist
@@ -381,13 +384,13 @@ def train(arglist, config):
                 # print(full_directory_path)
                 if not os.path.exists(full_directory_path):
                     os.makedirs(full_directory_path)  # Create the directory since it does not exist
-                rew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_' + str(arglist.mal_agent) + 'rewards.pkl')
+                rew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_' + str(arglist.mal_agent_prev) + str(arglist.mal_agent_new) +  'rewards.pkl')
                 with open(rew_file_name, 'wb') as fp:
                     pickle.dump(final_ep_rewards, fp)
-                agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_' + str(arglist.mal_agent) + '_agrewards.pkl')
+                agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_' + str(arglist.mal_agent_prev) + str(arglist.mal_agent_new) +  '_agrewards.pkl')
                 with open(agrew_file_name, 'wb') as fp:
                     pickle.dump(final_ep_ag_rewards, fp)
-                agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_' + str(arglist.mal_agent) + '_timesteps.pkl')
+                agrew_file_name = os.path.join(full_directory_path, config['maddpg']['exp_name'] + '_' + str(arglist.mal_agent_prev) + str(arglist.mal_agent_new) +  '_timesteps.pkl')
                 with open(agrew_file_name, 'wb') as fp:
                     pickle.dump(time_steps, fp)
                 # validation_success_file_name = os.path.join(full_directory_path,
