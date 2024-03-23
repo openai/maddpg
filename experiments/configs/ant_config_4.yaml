@@ -27,6 +27,6 @@ domain:
   evaluation_frequency: 5000 # how ofter should the agent be evaluated
   runs: 5 # number of statistical runs
   seed: 64 # seeds the enviroment
-  test_episodes: 30
-  display_rate: 15
+  test_episodes: 300
+  display_rate: 150
   render_dur: 2
