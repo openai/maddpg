@@ -1,0 +1,15 @@
+name: base
+channels:
+  - defaults
+dependencies:
+  - conda
+  - python=3.9
+  - python.app
+  - conda-env
+  - conda-build
+  - conda-verify
+  - _ipyw_jlab_nb_ext_conf
+  - anaconda==2022.10=py39_0
+  - anaconda-navigator==2.4.0
+  - navigator-updater
+prefix: /Users/Hunter/opt/anaconda3
