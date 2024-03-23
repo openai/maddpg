@@ -1,0 +1,49 @@
+maddpg:
+  scenario: Ant
+  max_episode_len: 25
+  lr: 0.01
+  fixed_agent: False
+  fixed_landmark: False
+  num_units: 128
+  location: 0.95
+  gamma: 0.95
+  partition: None
+  num_episodes: 15000
+  num_adversaries: 1
+  good_policy: "maddpg"
+  adv_policy: "maddpg"
+  batch_size: 1024
+  exp_name: "test"
+  save_rate: 500
+  restore: False
+  display: False
+  benchmark: False
+  benchmark_iters: 100000
+  benchmark_files: "./benchmark_files/"
+  plots_dir: "./learning_curves/"
+  load_dir: "./temp"
+domain:
+  name: Ant
+  factorization: 2x4 # agent factorization used, check MaMuJoCo Doc for more info
+  obsk: 1 # check MaMuJoCo Doc for more info
+  total_timesteps: 2_000_000 # how many learn steps the agent should take
+  #episodes: 1000
+  algo: TD3 # Valid values: 'DDPG', 'TD3', 'TD3-cc'
+  init_learn_timestep: 25001 # at which timestep should the agent start learning
+  #learning_starts_ep: 10 # Start Learning at episode X, before that fill the ERB with random actions
+  evaluation_frequency: 5000 # how ofter should the agent be evaluated
+  runs: 10 # number of statistical runs
+  seed: 64 # seeds the enviroment
+DDPG:
+  gamma: 0.99 # Reward Discount rate
+  tau: 0.01 # Target Network Update rate
+  N: 100 # Experience Replay Buffer's mini match size
+  experience_replay_buffer_size: 1000000
+  sigma: 0.1 # standard deviation of the action process for exploration
+  optimizer_gamma: 0.001 # the learning rate of the optimizers
+  mu_bias: True # Bias for the actor module
+  q_bias: True # Bias for the critic module
+other:
+  load_erb: null  # load the ERB into the model, (if `null` then no ERB is loaded)
+  load_Q: null  # load the critic into the model, (if `null` then no critic is loaded)
+  load_PI: null
