@@ -29,6 +29,9 @@ train_model () {
 # Training models with different configurations
 #train_model ./configs/ant_config_4.yaml ./Training/train_mujuco.py ./learning_curves/Ant.2x4.0.001.350.0.99/ ./tmp/policy/Ant.2x4.0.001.350.0.99/ 0
 # Train malfunction
-train_model ./configs/ant_config_4_transfer.yaml ./Training/train_mujuco_malfunction_transfer.py ./learning_curves/Ant.2x4.0.001.350.0.99/malfunction/ ./tmp/policy/Ant.2x4.0.001.350.0.99malfunction/ 0 1 5
-train_model ./configs/ant_config_4_transfer.yaml ./Training/train_mujuco_malfunction_transfer.py ./learning_curves/Ant.2x4.0.001.350.0.99/malfunction/ ./tmp/policy/Ant.2x4.0.001.350.0.99malfunction/ 2 3 5
+#train_model ./configs/ant_config_4_transfer.yaml ./Training/train_mujuco_malfunction_transfer.py ./learning_curves/Ant.2x4.0.001.350.0.99/malfunction/ ./tmp/policy/Ant.2x4.0.001.350.0.99malfunction/ 0 1 5
+#train_model ./configs/ant_config_4_transfer.yaml ./Training/train_mujuco_malfunction_transfer.py ./learning_curves/Ant.2x4.0.001.350.0.99/malfunction/ ./tmp/policy/Ant.2x4.0.001.350.0.99malfunction/ 2 3 5
+train_model ./configs/ant_config_4_transfer.yaml ./Training/train_mujuco_malfunction_transfer.py ./learning_curves/Ant.2x4.0.001.350.0.99/malfunction/ ./tmp/policy/Ant.2x4.0.001.350.0.99malfunction/ -1 1 5
+train_model ./configs/ant_config_4_transfer.yaml ./Training/train_mujuco_malfunction_transfer.py ./learning_curves/Ant.2x4.0.001.350.0.99/malfunction/ ./tmp/policy/Ant.2x4.0.001.350.0.99malfunction/ -1 3 5
+
 
