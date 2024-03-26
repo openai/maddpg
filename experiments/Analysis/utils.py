@@ -36,19 +36,19 @@ def get_rewards_for_last_n_runs(base_path, n, date_format='%Y%m%d-%H%M%S', aggre
         full_path = os.path.join(base_path, directory)
         rewards_data = []
         if malfunction_agent is not None:
-            with open(os.path.join(full_path, f'test_{malfunction_agent}rewards.pkl'), 'rb') as f:
+            with open(os.path.join(full_path, 'test_'+  malfunction_agent + 'rewards.pkl'), 'rb') as f:
                 rewards = pickle.load(f)
                 rewards_data.append(rewards)
 
             if aggrew:
-                with open(os.path.join(full_path, f'test_{malfunction_agent}_agrewards.pkl'), 'rb') as f:
+                with open(os.path.join(full_path, 'test_'+  malfunction_agent + '_agrewards.pkl'), 'rb') as f:
                     agrewards = pickle.load(f)
                     rewards_data.append(agrewards)
             else:
                 rewards_data.append(None)
 
             if time:
-                with open(os.path.join(full_path, f'test_{malfunction_agent}_timesteps.pkl'), 'rb') as f:
+                with open(os.path.join(full_path, 'test_'+  malfunction_agent + '_timesteps.pkl'), 'rb') as f:
                     time = pickle.load(f)
                     rewards_data.append(time)
             else:

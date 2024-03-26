@@ -105,8 +105,11 @@ def parse_args_n_config():
     lr = known_args.lr if known_args.lr else "1e-2"
     numunits = known_args.num_units if known_args.num_units else "128"
     gamma = known_args.gamma if known_args.gamma else "0.95"
+    if known_args.mal_agent_prev == -1:
+        base_directory_path = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/R2/"
+    else:
+        base_directory_path = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}malfunction/R2/agent_{known_args.mal_agent_prev}"
 
-    base_directory_path = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}malfunction/R2/agent_{known_args.mal_agent_prev}"
     if not os.path.exists(base_directory_path):
         os.makedirs(base_directory_path)
 
@@ -120,8 +123,12 @@ def parse_args_n_config():
         print("No previous directories found")
         most_recent_directory = ""
 
-    plot_directory_path = f"./learning_curves/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/malfunction/agent_{known_args.mal_agent_prev}"
-    load_dir = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}malfunction/R2/agent_{known_args.mal_agent_prev}"
+    if known_args.mal_agent_prev == -1:
+        plot_directory_path = f"./learning_curves/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/R2/"
+        load_dir = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/R2/"
+    else:
+        plot_directory_path = f"./learning_curves/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}/malfunction/agent_{known_args.mal_agent_prev}"
+        load_dir = f"./tmp/policy/{scenario}.{adjugate}.{lr}.{numunits}.{gamma}malfunction/R2/agent_{known_args.mal_agent_prev}"
 
     # print("Base directory path: ", base_directory_path)
     # print("Most recent directory: ", most_recent_directory)
@@ -237,6 +244,12 @@ def train(arglist, config):
         tot_steps = 0
         mal_agent_prev = arglist.mal_agent_prev
         mal_agent_new = arglist.mal_agent_new
+        if mal_agent_prev == -1 and mal_agent_new == 1:
+            mal_agent_prev = 0
+            mal_agent_new = 1
+        if mal_agent_prev == -1 and mal_agent_new == 3:
+            mal_agent_prev = 2
+            mal_agent_new = 3
 
         print(str(config['domain']['name']))
         print('Starting iterations...')
