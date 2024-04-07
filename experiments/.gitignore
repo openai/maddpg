@@ -1,0 +1,21 @@
+<<<<<<< HEAD
+# Git Ignore File
+
+# Ignore specific configuration files
+configs/
+plots/
+Analysis/
+#tmp/
+#learning_curves/
+
+# Additionally, always ignore the .gitignore file itself
+.gitignore
+=======
+
+./configs/
+
+./.gitignore
+>>>>>>> cc2c223 (.)
+
+
+.DS_Store
